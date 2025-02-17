@@ -7,7 +7,7 @@ body {
 
 header {
     background-color: #2c3e50;
-    color: black;
+    color: white;
     padding: 10px;
     text-align: center;
 }
@@ -31,27 +31,16 @@ main {
     padding: 20px;
 }
 
-.welcome {
-    text-align: center;
+.welcome, .materi-preview, .forum-content, .login-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
+    margin-bottom: 20px;
 }
 
-.forum-list {
-    margin-top: 20px;
-}
-
-.forum-list ul {
+ul {
     list-style: none;
     padding: 0;
-}
-
-.forum-list ul li {
-    background: white;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
 }
 
 footer {
