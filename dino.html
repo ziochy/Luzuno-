@@ -117,17 +117,7 @@
 
     function drawDino() {
         ctx.fillStyle = "green";
-        ctx.beginPath();
-        ctx.arc(dinoX + 15, dinoY + 15, 15, 0, Math.PI * 2); // Head
-        ctx.fill();
-
-        ctx.fillStyle = "darkgreen";
-        ctx.beginPath();
-        ctx.arc(dinoX + 15, dinoY + 30, 20, 0, Math.PI); // Body
-        ctx.fill();
-
-        ctx.fillStyle = "green";
-        ctx.fillRect(dinoX + 10, dinoY + 40, 10, 10); // Tail
+        ctx.fillRect(dinoX, dinoY, dinoWidth, dinoHeight);
     }
 
     function drawObstacles() {
