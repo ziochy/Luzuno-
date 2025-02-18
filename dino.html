@@ -49,7 +49,7 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="600" height="200"></canvas>
+<canvas id="gameCanvas" width="600" height="300"></canvas>
 <div class="score" id="score">Skor: 0</div>
 <div class="game-over" id="gameOver">Game Over!</div>
 
@@ -57,7 +57,7 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    let dinoX = 50, dinoY = 150, dinoWidth = 30, dinoHeight = 30;
+    let dinoX = 50, dinoY = 250, dinoWidth = 30, dinoHeight = 30; // Memperbaiki posisi Y dino
     let dinoSpeedY = 0, gravity = 0.5, jumpPower = -10;
     let isJumping = false;
     let isGameOver = false;
@@ -109,8 +109,8 @@
     function updateDino() {
         dinoSpeedY += gravity;
         dinoY += dinoSpeedY;
-        if (dinoY > 150) {
-            dinoY = 150;
+        if (dinoY > 250) { // Mengatur posisi Y lebih tinggi agar dino tetap di tanah
+            dinoY = 250;
             isJumping = false;
         }
     }
