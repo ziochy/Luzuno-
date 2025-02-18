@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Luzuno</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        function register() {
+            let username = document.getElementById("reg-username").value.trim();
+            let password = document.getElementById("reg-password").value.trim();
+            
+            if (username === "" || password === "") {
+                alert("Username dan password tidak boleh kosong!");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+
+            if (users[username]) {
+                alert("Username sudah terdaftar! Silakan gunakan username lain.");
+                return;
+            }
+
+            users[username] = password;
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert("Pendaftaran berhasil! Silakan login.");
+            document.getElementById("reg-username").value = "";
+            document.getElementById("reg-password").value = "";
+        }
+
+        function login() {
+            let username = document.getElementById("login-username").value.trim();
+            let password = document.getElementById("login-password").value.trim();
+
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+
+            if (users[username] && users[username] === password) {
+                localStorage.setItem("loggedInUser", username);
+                alert("Login berhasil! Selamat datang, " + username);
+                window.location.href = "beranda.html"; // Redirect ke beranda
+            } else {
+                alert("Username atau password salah!");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            alert("Anda telah logout!");
+            window.location.href = "login.html";
+        }
+
+        function checkLogin() {
+            let loggedInUser = localStorage.getItem("loggedInUser");
+            if (loggedInUser) {
+                document.getElementById("login-section").style.display = "none";
+                document.getElementById("user-section").style.display = "block";
+                document.getElementById("username-display").innerText = loggedInUser;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", checkLogin);
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkblue;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login / Daftar Luzuno</h2>
+
+        <div id="login-section">
+            <h3>Login</h3>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p>Belum punya akun? <a href="register.html">Daftar</a></p>
+        </div>
+
+        <div id="user-section" class="hidden">
+            <h3>Selamat datang, <span id="username-display"></span>!</h3>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+</body>
+</html>
