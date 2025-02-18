@@ -157,6 +157,13 @@
 { question: "Apa arti dari '時間'?", options: ["Waktu", "Tempat", "Cuaca", "Hari"], answer: "Waktu" },
 { question: "Hiragana untuk 'ookii' (大きい) adalah?", options: ["おおきい", "ちいさい", "みじかい", "あかるい"], answer: "おおきい" },// Tambahkan 90 soal lainnya sesuai kebutuhan
         ];
+                // Memberikan feedback
+                if (userAnswer === correctAnswer) {
+                    feedback = 'Benar!';
+                    score++;
+                } else {
+                    feedback = `Salah, yang benar adalah: ${correctAnswer}`;
+                }
 
         // Acak Soal & Ambil 20 Soal
         function getRandomQuestions() {
@@ -180,24 +187,17 @@
             quizContainer.appendChild(questionElement);
         });
 
-    let score = 0;
-
+        // Cek Jawaban & Hitung Nilai
         function checkAnswers() {
-            const answers = document.querySelectorAll('.answer');
-            let feedback = '';
-            
-            answers.forEach((answer, index) => {
-                const userAnswer = answer.value;
-                const correctAnswer = questions[index].answer;
-
-                // Memberikan feedback
-                if (userAnswer === correctAnswer) {
-                    feedback = 'Benar!';
+            let score = 0;
+            selectedQuestions.forEach((q, index) => {
+                let selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selectedOption && selectedOption.value === q.answer) {
                     score++;
-                } else {
-                    feedback = `Salah, yang benar adalah: ${correctAnswer}`;
                 }
-
-            // Menampilkan nilai akhir
-            document.getElementById('score').innerText = `Nilai Anda: ${score} / ${questions.length}`;
-        
+            });
+            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 20`;
+        }
+    </script>
+</body>
+</html>
