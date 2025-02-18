@@ -18,6 +18,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            flex-direction: column;
         }
 
         .game-container {
@@ -90,6 +91,27 @@
             font-size: 18px;
             margin-top: 10px;
         }
+
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        #game-over {
+            font-size: 18px;
+            color: red;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -105,7 +127,8 @@
             <p id="lives">Hati: 5</p>
             <p id="invincible" class="hidden">Dino Kebal!</p>
         </div>
-        <p id="game-over" class="hidden">Game Over! Tekan Spasi untuk mulai lagi.</p>
+        <button class="btn" id="startButton">Mulai Game</button>
+        <p id="game-over" class="hidden">Game Over! Tekan Mulai untuk bermain lagi.</p>
     </div>
 
     <script>
@@ -116,6 +139,7 @@
         let livesElement = document.getElementById('lives');
         let gameOverElement = document.getElementById('game-over');
         let invincibleElement = document.getElementById('invincible');
+        let startButton = document.getElementById('startButton');
 
         let score = 0;
         let lives = 5;
@@ -137,6 +161,7 @@
             lives = 5;
             updateStatus();
             setInterval(regenerateHearts, regenInterval); // Mulai regen hati
+            startButton.disabled = true; // Nonaktifkan tombol mulai setelah game dimulai
         }
 
         // Fungsi untuk membuat dino melompat
@@ -166,6 +191,7 @@
                     obstacle.style.animation = "none";
                     coin.style.animation = "none";
                     document.removeEventListener('keydown', jump);
+                    startButton.disabled = false; // Aktifkan tombol mulai setelah game selesai
                 }
                 updateStatus();
             }
@@ -215,15 +241,11 @@
             collectCoin();
         }, 10);
 
-        // Mulai game saat menekan spasi pertama kali
-        document.addEventListener('keydown', (event) => {
-            if (event.keyCode === 32 && gameOverElement.classList.contains('hidden')) {
-                startGame();
-            }
-        });
-
         // Mengaktifkan efek kebal setelah 1 menit
         setInterval(activateInvincibility, 60000); // 1 menit
+
+        // Mulai game saat tombol mulai diklik
+        startButton.addEventListener('click', startGame);
     </script>
 </body>
-                </html>
+</html>
