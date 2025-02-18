@@ -227,6 +227,142 @@
             <div id="commentsContainer"></div>
         </section>
     </main>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luzuno - Beranda</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            loadComments();
+        });
+
+        function postComment() {
+            let name = document.getElementById("username").value.trim();
+            let comment = document.getElementById("comment").value.trim();
+            
+            if (name === "" || comment === "") {
+                alert("Nama dan komentar tidak boleh kosong!");
+                return;
+            }
+
+            let commentData = {
+                name: name,
+                comment: comment,
+                timestamp: new Date().toLocaleString(),
+                timeSaved: new Date().getTime() // Simpan waktu dalam milidetik
+            };
+
+            let comments = JSON.parse(localStorage.getItem("comments")) || [];
+            comments.push(commentData);
+            localStorage.setItem("comments", JSON.stringify(comments));
+
+            document.getElementById("username").value = "";
+            document.getElementById("comment").value = "";
+
+            loadComments();
+        }
+
+        function loadComments() {
+            let comments = JSON.parse(localStorage.getItem("comments")) || [];
+            let commentsContainer = document.getElementById("commentsContainer");
+            commentsContainer.innerHTML = "";
+
+            comments.forEach((commentData, index) => {
+                let commentDiv = document.createElement("div");
+                commentDiv.classList.add("comment-box");
+
+                let currentTime = new Date().getTime();
+                let commentTime = commentData.timeSaved;
+                let timeDifference = (currentTime - commentTime) / 60000; // dalam menit
+
+                let deleteButton = timeDifference < 5 
+                    ? `<button onclick="deleteComment(${index})">Hapus</button>` 
+                    : `<small>(Komentar tidak bisa dihapus setelah 5 menit)</small>`;
+
+                commentDiv.innerHTML = `
+                    <strong>${commentData.name}</strong> - <small>${commentData.timestamp}</small>
+                    <p>${commentData.comment}</p>
+                    ${deleteButton}
+                    <hr>
+                `;
+                commentsContainer.appendChild(commentDiv);
+            });
+        }
+
+        function deleteComment(index) {
+            let comments = JSON.parse(localStorage.getItem("comments")) || [];
+            comments.splice(index, 1);
+            localStorage.setItem("comments", JSON.stringify(comments));
+            loadComments();
+        }
+    </script>
+    <style>
+        .comment-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .comment-box {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Selamat Datang di Luzuno</h1>
+            <p>Belajar Bahasa Jepang Mudah dan Menyenangkan!</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="hiragana.html"><i class="fas fa-book"></i> Hiragana</a></li>
+                <li><a href="katakana.html"><i class="fas fa-book-open"></i> Katakana</a></li>
+                <li><a href="n5.html"><i class="fas fa-graduation-cap"></i> JLPT N5</a></li>
+                <li><a href="n4.html"><i class="fas fa-graduation-cap"></i> JLPT N4</a></li>
+                <li><a href="pola-kalimat.html"><i class="fas fa-comments"></i> Pola Kalimat</a></li>
+                <li><a href="kaiwa.html"><i class="fas fa-users"></i> Kaiwa</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="comment-section">
+            <h2>Bagikan Pendapatmu!</h2>
+            <input type="text" id="username" placeholder="Nama Anda">
+            <textarea id="comment" placeholder="Tulis komentar..." rows="4"></textarea>
+            <button onclick="postComment()">Kirim Komentar</button>
+
+            <h3>Komentar Pengguna:</h3>
+            <div id="commentsContainer"></div>
+        </section>
+    </main>
 
     <footer>
         <p>&copy; 2025 Luzuno. Semua Hak Dilindungi.</p>
@@ -237,4 +373,4 @@
         </div>
     </footer>
 </body>
-</html>
+    </html>
