@@ -158,10 +158,10 @@
 { question: "Hiragana untuk 'ookii' (大きい) adalah?", options: ["おおきい", "ちいさい", "みじかい", "あかるい"], answer: "おおきい" },// Tambahkan 90 soal lainnya sesuai kebutuhan
         ];
 
-        // Acak Soal & Ambil 30 Soal
-        function getRandomQuestions(30) {
+        // Acak Soal & Ambil 20 Soal
+        function getRandomQuestions() {
             let shuffled = questions.sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 30);
+            return shuffled.slice(0, 20);
         }
 
         const selectedQuestions = getRandomQuestions();
@@ -189,7 +189,7 @@
                     score++;
                 }
             });
-            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 30`;
+            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 20`;
         }
     </script>
 </body>
