@@ -5,235 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luzuno - Beranda</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- Ikon FontAwesome -->
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <h1>Selamat Datang di Luzuno</h1>
-            <p>Belajar Bahasa Jepang Mudah dan Menyenangkan!</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="hiragana.html"><i class="fas fa-book"></i> Hiragana</a></li>
-                <li><a href="katakana.html"><i class="fas fa-book-open"></i> Katakana</a></li>
-                <li><a href="n5.html"><i class="fas fa-graduation-cap"></i> JLPT N5</a></li>
-                <li><a href="n4.html"><i class="fas fa-graduation-cap"></i> JLPT N4</a></li>
-                <li><a href="pola-kalimat.html"><i class="fas fa-comments"></i> Pola Kalimat</a></li>
-                <li><a href="kaiwa.html"><i class="fas fa-users"></i> Kaiwa</a></li>
-                <li><a href="partikel.html"><i class="fas fa-cogs"></i> Partikel</a></li> <!-- Menambah link partikel -->
-                <li><a href="kamus.html"><i class="fas fa-bookmark"></i> Kamus</a></li> <!-- Menambah link kamus -->
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section class="intro">
-            <h2>Apa yang Ingin Kamu Pelajari?</h2>
-            <p>Website ini menyediakan materi lengkap untuk belajar bahasa Jepang dari dasar hingga tingkat menengah. Mulailah perjalanan belajarmu sekarang!</p>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-    <i class="fas fa-pen"></i>
-    <h3>Renshuu</h3>
-    <p>Latihan soal hiragana & kanji N5-N4 untuk meningkatkan pemahamanmu.</p>
-    <a href="renshuu.html">Mulai Latihan</a>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-book"></i>
-                <h3>Hiragana & Katakana</h3>
-                <p>Pelajari dasar-dasar penulisan bahasa Jepang dengan Hiragana dan Katakana.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-graduation-cap"></i>
-                <h3>JLPT N5 & N4</h3>
-                <p>Persiapkan diri untuk ujian JLPT dengan materi yang terstruktur.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-comments"></i>
-                <h3>Pola Kalimat</h3>
-                <p>Pahami pola kalimat dasar untuk percakapan sehari-hari.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-users"></i>
-                <h3>Kaiwa</h3>
-                <p>Latihan percakapan untuk meningkatkan kemampuan berbicara.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-cogs"></i>
-                <h3>Partikel</h3>
-                <p>Pelajari berbagai partikel penting dalam bahasa Jepang untuk memahami struktur kalimat.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-bookmark"></i>
-                <h3>Kamus</h3>
-                <p>Akses kamus bahasa Jepang yang lengkap untuk membantu belajar kosakata baru.</p>
-            </div>
-        </section>
-    </main>
-
-    <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luzuno - Beranda</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            loadComments();
-        });
-
-        function postComment() {
-            let name = document.getElementById("username").value.trim();
-            let comment = document.getElementById("comment").value.trim();
-            
-            if (name === "" || comment === "") {
-                alert("Nama dan komentar tidak boleh kosong!");
-                return;
-            }
-
-            let commentData = {
-                name: name,
-                comment: comment,
-                timestamp: new Date().toLocaleString()
-            };
-
-            let comments = JSON.parse(localStorage.getItem("comments")) || [];
-            comments.push(commentData);
-            localStorage.setItem("comments", JSON.stringify(comments));
-
-            document.getElementById("username").value = "";
-            document.getElementById("comment").value = "";
-
-            loadComments();
-        }
-
-        function loadComments() {
-            let comments = JSON.parse(localStorage.getItem("comments")) || [];
-            let commentsContainer = document.getElementById("commentsContainer");
-            commentsContainer.innerHTML = "";
-
-            comments.forEach((commentData, index) => {
-                let commentDiv = document.createElement("div");
-                commentDiv.classList.add("comment-box");
-                commentDiv.innerHTML = `
-                    <strong>${commentData.name}</strong> - <small>${commentData.timestamp}</small>
-                    <p>${commentData.comment}</p>
-                    <button onclick="deleteComment(${index})">Hapus</button>
-                    <hr>
-                `;
-                commentsContainer.appendChild(commentDiv);
-            });
-        }
-
-        function deleteComment(index) {
-            let comments = JSON.parse(localStorage.getItem("comments")) || [];
-            comments.splice(index, 1);
-            localStorage.setItem("comments", JSON.stringify(comments));
-            loadComments();
-        }
-    </script>
-    <style>
-        .comment-section {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        .comment-box {
-            background: white;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px;
-            background: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background: darkblue;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <h1>Selamat Datang di Luzuno</h1>
-            <p>Belajar Bahasa Jepang Mudah dan Menyenangkan!</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="hiragana.html"><i class="fas fa-book"></i> Hiragana</a></li>
-                <li><a href="katakana.html"><i class="fas fa-book-open"></i> Katakana</a></li>
-                <li><a href="n5.html"><i class="fas fa-graduation-cap"></i> JLPT N5</a></li>
-                <li><a href="n4.html"><i class="fas fa-graduation-cap"></i> JLPT N4</a></li>
-                <li><a href="pola-kalimat.html"><i class="fas fa-comments"></i> Pola Kalimat</a></li>
-                <li><a href="kaiwa.html"><i class="fas fa-users"></i> Kaiwa</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section class="intro">
-            <h2>Apa yang Ingin Kamu Pelajari?</h2>
-            <p>Website ini menyediakan materi lengkap untuk belajar bahasa Jepang dari dasar hingga tingkat menengah. Mulailah perjalanan belajarmu sekarang!</p>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-                <i class="fas fa-book"></i>
-                <h3>Hiragana & Katakana</h3>
-                <p>Pelajari dasar-dasar penulisan bahasa Jepang dengan Hiragana dan Katakana.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-graduation-cap"></i>
-                <h3>JLPT N5 & N4</h3>
-                <p>Persiapkan diri untuk ujian JLPT dengan materi yang terstruktur.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-comments"></i>
-                <h3>Pola Kalimat</h3>
-                <p>Pahami pola kalimat dasar untuk percakapan sehari-hari.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-users"></i>
-                <h3>Kaiwa</h3>
-                <p>Latihan percakapan untuk meningkatkan kemampuan berbicara.</p>
-            </div>
-        </section>
-
-        <section class="comment-section">
-            <h2>Bagikan Pendapatmu!</h2>
-            <input type="text" id="username" placeholder="Nama Anda">
-            <textarea id="comment" placeholder="Tulis komentar..." rows="4"></textarea>
-            <button onclick="postComment()">Kirim Komentar</button>
-
-            <h3>Komentar Pengguna:</h3>
-            <div id="commentsContainer"></div>
-        </section>
-    </main>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luzuno - Beranda</title>
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -353,6 +124,35 @@
     </header>
 
     <main>
+        <section class="intro">
+            <h2>Apa yang Ingin Kamu Pelajari?</h2>
+            <p>Website ini menyediakan materi lengkap untuk belajar bahasa Jepang dari dasar hingga tingkat menengah. Mulailah perjalanan belajarmu sekarang!</p>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-book"></i>
+                <h3>Hiragana & Katakana</h3>
+                <p>Pelajari dasar-dasar penulisan bahasa Jepang dengan Hiragana dan Katakana.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>JLPT N5 & N4</h3>
+                <p>Persiapkan diri untuk ujian JLPT dengan materi yang terstruktur.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-comments"></i>
+                <h3>Pola Kalimat</h3>
+                <p>Pahami pola kalimat dasar untuk percakapan sehari-hari.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Kaiwa</h3>
+                <p>Latihan percakapan untuk meningkatkan kemampuan berbicara.</p>
+            </div>
+        </section>
+
+        <!-- Fitur Komentar -->
         <section class="comment-section">
             <h2>Bagikan Pendapatmu!</h2>
             <input type="text" id="username" placeholder="Nama Anda">
