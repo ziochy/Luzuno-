@@ -3,29 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Dino</title>
+    <title>Game Dino Chrome</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f0f0;
-            font-family: 'Arial', sans-serif;
+            flex-direction: column;
         }
-        canvas {
+
+        #gameCanvas {
             background-color: #f4f4f4;
+            border: 2px solid #000;
             display: block;
         }
+
         .score {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            left: 10px;
             font-size: 24px;
             font-weight: bold;
         }
+
         .game-over {
             position: absolute;
             top: 50%;
@@ -48,7 +57,7 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    let dinoX = 50, dinoY = canvas.height - 50, dinoWidth = 30, dinoHeight = 30;
+    let dinoX = 50, dinoY = 150, dinoWidth = 30, dinoHeight = 30;
     let dinoSpeedY = 0, gravity = 0.5, jumpPower = -10;
     let isJumping = false;
     let isGameOver = false;
@@ -100,8 +109,8 @@
     function updateDino() {
         dinoSpeedY += gravity;
         dinoY += dinoSpeedY;
-        if (dinoY > canvas.height - dinoHeight - 10) {
-            dinoY = canvas.height - dinoHeight - 10;
+        if (dinoY > 150) {
+            dinoY = 150;
             isJumping = false;
         }
     }
@@ -109,12 +118,16 @@
     function drawDino() {
         ctx.fillStyle = "green";
         ctx.beginPath();
-        ctx.moveTo(dinoX, dinoY + 15); // Tail
-        ctx.lineTo(dinoX + 15, dinoY); // Back
-        ctx.lineTo(dinoX + 30, dinoY); // Head
-        ctx.lineTo(dinoX + 25, dinoY + 15); // Mouth
-        ctx.closePath();
+        ctx.arc(dinoX + 15, dinoY + 15, 15, 0, Math.PI * 2); // Head
         ctx.fill();
+
+        ctx.fillStyle = "darkgreen";
+        ctx.beginPath();
+        ctx.arc(dinoX + 15, dinoY + 30, 20, 0, Math.PI); // Body
+        ctx.fill();
+
+        ctx.fillStyle = "green";
+        ctx.fillRect(dinoX + 10, dinoY + 40, 10, 10); // Tail
     }
 
     function drawObstacles() {
