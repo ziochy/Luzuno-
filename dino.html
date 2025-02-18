@@ -112,6 +112,21 @@
             color: red;
             margin-top: 20px;
         }
+
+        .jump-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .jump-btn:hover {
+            background-color: #007B9A;
+        }
     </style>
 </head>
 <body>
@@ -128,6 +143,7 @@
             <p id="invincible" class="hidden">Dino Kebal!</p>
         </div>
         <button class="btn" id="startButton">Mulai Game</button>
+        <button class="jump-btn hidden" id="jumpButton">Loncat</button>
         <p id="game-over" class="hidden">Game Over! Tekan Mulai untuk bermain lagi.</p>
     </div>
 
@@ -140,6 +156,7 @@
         let gameOverElement = document.getElementById('game-over');
         let invincibleElement = document.getElementById('invincible');
         let startButton = document.getElementById('startButton');
+        let jumpButton = document.getElementById('jumpButton');
 
         let score = 0;
         let lives = 5;
@@ -154,7 +171,7 @@
             coin.style.animation = "moveCoin 2s infinite linear";
             gameOverElement.classList.add('hidden');
             dino.style.bottom = "0px";
-            document.addEventListener('keydown', jump);
+            document.addEventListener('keydown', jump); // Menambahkan event listener untuk loncat dengan spasi
             obstacle.style.right = '-50px';
             coin.style.right = '-50px';
             score = 0;
@@ -162,11 +179,12 @@
             updateStatus();
             setInterval(regenerateHearts, regenInterval); // Mulai regen hati
             startButton.disabled = true; // Nonaktifkan tombol mulai setelah game dimulai
+            jumpButton.classList.remove('hidden'); // Menampilkan tombol loncat
         }
 
         // Fungsi untuk membuat dino melompat
-        function jump(event) {
-            if (event.keyCode === 32 && !isJumping && !isInvincible) { // Spasi untuk melompat
+        function jump() {
+            if (!isJumping && !isInvincible) { // Jika tidak sedang lompat dan tidak kebal
                 isJumping = true;
                 dino.style.bottom = '100px'; // Posisi lompat
                 setTimeout(() => {
@@ -192,6 +210,7 @@
                     coin.style.animation = "none";
                     document.removeEventListener('keydown', jump);
                     startButton.disabled = false; // Aktifkan tombol mulai setelah game selesai
+                    jumpButton.classList.add('hidden'); // Sembunyikan tombol loncat saat game over
                 }
                 updateStatus();
             }
@@ -246,6 +265,9 @@
 
         // Mulai game saat tombol mulai diklik
         startButton.addEventListener('click', startGame);
+
+        // Menambahkan event listener pada tombol loncat
+        jumpButton.addEventListener('click', jump);
     </script>
 </body>
 </html>
