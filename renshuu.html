@@ -157,15 +157,27 @@
 { question: "Apa arti dari '時間'?", options: ["Waktu", "Tempat", "Cuaca", "Hari"], answer: "Waktu" },
 { question: "Hiragana untuk 'ookii' (大きい) adalah?", options: ["おおきい", "ちいさい", "みじかい", "あかるい"], answer: "おおきい" },// Tambahkan 90 soal lainnya sesuai kebutuhan
         ];
-                // Memberikan feedback
-                if (userAnswer === correctAnswer) {
-                    feedback = 'Benar!';
-                    score++;
-                } else {
-                    feedback = `Salah, yang benar adalah: ${correctAnswer}`;
-                }
-
+            
         // Acak Soal & Ambil 20 Soal
+        function getRandomQuestions() {
+            let shuffled = questions.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 20);
+        }
+
+        const selectedQuestions = getRandomQuestions();
+        const quizContainer = document.getElementById("quiz-container");
+
+        // Tampilkan Soal
+        selectedQuestions.forEach((q, index) => {
+            let questionElement = document.createElement("div");
+            questionElement.classList.add("question-container");
+            questionElement.innerHTML = `
+                <p class="question">${index + 1}. ${q.question}</p>
+                <div class="options">
+                    ${q.options.map(opt => `<label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label>`).join("")}
+                </div>
+            `;
+           // Acak Soal & Ambil 20 Soal
         function getRandomQuestions() {
             let shuffled = questions.sort(() => 0.5 - Math.random());
             return shuffled.slice(0, 20);
@@ -186,7 +198,16 @@
             `;
             quizContainer.appendChild(questionElement);
         });
-
+ quizContainer.appendChild(questionElement);
+        });
+      // Memberikan feedback
+                if (userAnswer === correctAnswer) {
+                    feedback = 'Benar!';
+                    score++;
+                } else {
+                    feedback = `Salah, yang benar adalah: ${correctAnswer}`;
+                }
+        
         // Cek Jawaban & Hitung Nilai
         function checkAnswers() {
             let score = 0;
