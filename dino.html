@@ -66,8 +66,8 @@
     let obstacles = [];
     let obstacleWidth = 20, obstacleHeight = 30, obstacleSpeed = 2;
 
-    // Posisi vertikal tengah canvas untuk Dino
-    let dinoY = canvas.height / 2 - dinoHeight / 2;
+    // Menghitung posisi vertikal tengah canvas untuk Dino
+    let dinoY = canvas.height - dinoHeight - 20; // Posisi dino di atas sedikit dari bawah
 
     document.addEventListener("keydown", jump);
 
@@ -112,8 +112,8 @@
     function updateDino() {
         dinoSpeedY += gravity;
         dinoY += dinoSpeedY;
-        if (dinoY > canvas.height - dinoHeight) {
-            dinoY = canvas.height - dinoHeight;
+        if (dinoY > canvas.height - dinoHeight - 20) {
+            dinoY = canvas.height - dinoHeight - 20;
             isJumping = false;
         }
     }
