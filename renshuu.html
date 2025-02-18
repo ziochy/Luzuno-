@@ -198,10 +198,6 @@
                     feedback = `Salah, yang benar adalah: ${correctAnswer}`;
                 }
 
-                // Tampilkan feedback untuk setiap soal
-                document.getElementById(`feedback-${index}`).innerText = feedback;
-            });
-
             // Menampilkan nilai akhir
             document.getElementById('score').innerText = `Nilai Anda: ${score} / ${questions.length}`;
         }
@@ -209,17 +205,10 @@
         <p>&copy; 2025 Luzuno. Semua Hak Dilindungi.</p>
     </footer>
     
-   // Cek Jawaban & Hitung Nilai
-        function checkAnswers() {
-            let score = 0;
-            selectedQuestions.forEach((q, index) => {
-                let selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
-                if (selectedOption && selectedOption.value === q.answer) {
-                    score++;
-                }
-            });
-            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 20`;
-        }
-    </script>
-</body>
-             ziochy 
+   
+    
+           
+            
+            
+            
+            ziochy 
