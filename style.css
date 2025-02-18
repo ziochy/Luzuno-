@@ -107,3 +107,49 @@ footer .social-links a {
 footer .social-links a:hover {
     color: #4a90e2;
 }
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamus Luzuno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+
+    <style>
+        .user-notes {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f4f4f4;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .user-notes textarea {
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .user-notes button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .user-notes button:first-of-type {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .user-notes button:last-of-type {
+            background-color: #f44336;
+            color: white;
+            margin-left: 10px;
+        }
+    </style>
+</head>
