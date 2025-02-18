@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Dino - Koin dan Hati</title>
+    <title>Game Dino Chrome</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f0f0f0;
             display: flex;
             justify-content: center;
@@ -21,273 +21,131 @@
             flex-direction: column;
         }
 
-        .game-container {
-            text-align: center;
-        }
-
-        #gameArea {
-            position: relative;
-            width: 600px;
-            height: 150px;
-            background-color: #f2f2f2;
+        #gameCanvas {
+            background-color: #f4f4f4;
             border: 2px solid #000;
-            overflow: hidden;
-            margin-top: 20px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            display: block;
         }
 
-        .dino {
+        .score {
             position: absolute;
-            bottom: 0;
-            left: 50px;
-            width: 50px;
-            height: 50px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            transition: bottom 0.3s ease-in-out;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
         }
 
-        .obstacle {
+        .game-over {
             position: absolute;
-            bottom: 0;
-            right: -50px;
-            width: 50px;
-            height: 50px;
-            background-color: red;
-            animation: moveObstacle 2s infinite linear;
-        }
-
-        .coin {
-            position: absolute;
-            bottom: 50px;
-            right: -50px;
-            width: 30px;
-            height: 30px;
-            background-color: gold;
-            border-radius: 50%;
-            animation: moveCoin 2s infinite linear;
-        }
-
-        @keyframes moveObstacle {
-            from {
-                right: -50px;
-            }
-            to {
-                right: 100%;
-            }
-        }
-
-        @keyframes moveCoin {
-            from {
-                right: -50px;
-            }
-            to {
-                right: 100%;
-            }
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        #status p {
-            font-size: 18px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #45a049;
-        }
-
-        #game-over {
-            font-size: 18px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bold;
             color: red;
-            margin-top: 20px;
-        }
-
-        .jump-btn {
-            margin-top: 20px;
-            padding: 15px 25px;
-            font-size: 20px;
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: transform 0.2s ease;
-        }
-
-        .jump-btn:hover {
-            background-color: #007B9A;
-            transform: scale(1.1);
-        }
-
-        .jump-btn:active {
-            transform: scale(0.9);
-        }
-
-        .start-btn {
-            margin-top: 20px;
-            padding: 12px 25px;
-            font-size: 18px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: transform 0.2s ease;
-        }
-
-        .start-btn:hover {
-            background-color: #45a049;
-            transform: scale(1.1);
-        }
-
-        .start-btn:active {
-            transform: scale(0.9);
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Game Dino dengan Koin dan Hati</h1>
-        <div id="gameArea">
-            <div id="dino" class="dino"></div>
-            <div id="obstacle" class="obstacle"></div>
-            <div id="coin" class="coin"></div>
-        </div>
-        <div id="status">
-            <p id="score">Skor: 0</p>
-            <p id="lives">Hati: 5</p>
-            <p id="invincible" class="hidden">Dino Kebal!</p>
-        </div>
-        <button class="start-btn" id="startButton">Mulai Game</button>
-        <button class="jump-btn hidden" id="jumpButton">Loncat!</button>
-        <p id="game-over" class="hidden">Game Over! Tekan Mulai untuk bermain lagi.</p>
-    </div>
 
-    <script>
-        let dino = document.getElementById('dino');
-        let obstacle = document.getElementById('obstacle');
-        let coin = document.getElementById('coin');
-        let scoreElement = document.getElementById('score');
-        let livesElement = document.getElementById('lives');
-        let gameOverElement = document.getElementById('game-over');
-        let invincibleElement = document.getElementById('invincible');
-        let startButton = document.getElementById('startButton');
-        let jumpButton = document.getElementById('jumpButton');
+<canvas id="gameCanvas" width="600" height="200"></canvas>
+<div class="score" id="score">Skor: 0</div>
+<div class="game-over" id="gameOver">Game Over!</div>
 
-        let score = 0;
-        let lives = 5;
-        let isJumping = false;
-        let isInvincible = false;
-        let invincibleDuration = 5000;
-        let regenInterval = 60000;
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-        function startGame() {
-            obstacle.style.animation = "moveObstacle 2s infinite linear";
-            coin.style.animation = "moveCoin 2s infinite linear";
-            gameOverElement.classList.add('hidden');
-            dino.style.bottom = "0px";
-            document.addEventListener('keydown', jump);
-            obstacle.style.right = '-50px';
-            coin.style.right = '-50px';
-            score = 0;
-            lives = 5;
-            updateStatus();
-            setInterval(regenerateHearts, regenInterval);
-            startButton.disabled = true;
-            jumpButton.classList.remove('hidden');
+    let dinoX = 50, dinoY = 150, dinoWidth = 30, dinoHeight = 30;
+    let dinoSpeedY = 0, gravity = 0.5, jumpPower = -10;
+    let isJumping = false;
+    let isGameOver = false;
+    let score = 0;
+
+    let obstacles = [];
+    let obstacleWidth = 20, obstacleHeight = 30, obstacleSpeed = 2;
+
+    document.addEventListener("keydown", jump);
+
+    function jump(e) {
+        if (e.code === "Space" && !isJumping && !isGameOver) {
+            isJumping = true;
+            dinoSpeedY = jumpPower;
         }
+    }
 
-        function jump() {
-            if (!isJumping && !isInvincible) {
-                isJumping = true;
-                dino.style.bottom = '100px';
-                setTimeout(() => {
-                    dino.style.bottom = '0px';
-                    isJumping = false;
-                }, 500);
-            }
-        }
+    function createObstacle() {
+        const randomHeight = Math.random() * (canvas.height - 50);
+        obstacles.push({ x: canvas.width, y: randomHeight, width: obstacleWidth, height: obstacleHeight });
+    }
 
-        function checkCollision() {
-            if (isInvincible) return;
-            let dinoPosition = dino.getBoundingClientRect();
-            let obstaclePosition = obstacle.getBoundingClientRect();
-
-            if (dinoPosition.left < obstaclePosition.right &&
-                dinoPosition.right > obstaclePosition.left &&
-                dinoPosition.bottom > obstaclePosition.top) {
-                lives--;
-                if (lives <= 0) {
-                    gameOverElement.classList.remove('hidden');
-                    obstacle.style.animation = "none";
-                    coin.style.animation = "none";
-                    document.removeEventListener('keydown', jump);
-                    startButton.disabled = false;
-                    jumpButton.classList.add('hidden');
-                }
-                updateStatus();
-            }
-        }
-
-        function collectCoin() {
-            let dinoPosition = dino.getBoundingClientRect();
-            let coinPosition = coin.getBoundingClientRect();
-
-            if (dinoPosition.left < coinPosition.right &&
-                dinoPosition.right > coinPosition.left &&
-                dinoPosition.bottom > coinPosition.top) {
+    function updateObstacles() {
+        for (let i = 0; i < obstacles.length; i++) {
+            obstacles[i].x -= obstacleSpeed;
+            if (obstacles[i].x + obstacles[i].width < 0) {
+                obstacles.splice(i, 1);
                 score++;
-                updateStatus();
-                coin.style.right = '-50px';
+                document.getElementById("score").innerText = `Skor: ${score}`;
             }
         }
+    }
 
-        function updateStatus() {
-            scoreElement.innerText = `Skor: ${score}`;
-            livesElement.innerText = `Hati: ${lives}`;
-        }
-
-        function regenerateHearts() {
-            if (lives < 5) {
-                lives++;
-                updateStatus();
+    function checkCollision() {
+        for (let i = 0; i < obstacles.length; i++) {
+            if (dinoX + dinoWidth > obstacles[i].x &&
+                dinoX < obstacles[i].x + obstacles[i].width &&
+                dinoY + dinoHeight > obstacles[i].y) {
+                endGame();
             }
         }
+    }
 
-        function activateInvincibility() {
-            isInvincible = true;
-            invincibleElement.classList.remove('hidden');
-            setTimeout(() => {
-                isInvincible = false;
-                invincibleElement.classList.add('hidden');
-            }, invincibleDuration);
+    function endGame() {
+        isGameOver = true;
+        document.getElementById("gameOver").style.display = "block";
+    }
+
+    function updateDino() {
+        dinoSpeedY += gravity;
+        dinoY += dinoSpeedY;
+        if (dinoY > 150) {
+            dinoY = 150;
+            isJumping = false;
+        }
+    }
+
+    function drawDino() {
+        ctx.fillStyle = "green";
+        ctx.fillRect(dinoX, dinoY, dinoWidth, dinoHeight);
+    }
+
+    function drawObstacles() {
+        ctx.fillStyle = "red";
+        for (let i = 0; i < obstacles.length; i++) {
+            ctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
+        }
+    }
+
+    function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (isGameOver) return;
+
+        updateDino();
+        updateObstacles();
+        checkCollision();
+        drawDino();
+        drawObstacles();
+
+        if (Math.random() < 0.02) {
+            createObstacle();
         }
 
-        setInterval(() => {
-            checkCollision();
-            collectCoin();
-        }, 10);
+        requestAnimationFrame(update);
+    }
 
-        setInterval(activateInvincibility, 60000);
+    setInterval(update, 1000 / 60);
+</script>
 
-        startButton.addEventListener('click', startGame);
-
-        jumpButton.addEventListener('click', jump);
-    </script>
 </body>
 </html>
