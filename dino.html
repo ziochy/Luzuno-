@@ -4,7 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Dino - Koin dan Hati</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .game-container {
+            text-align: center;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 600px;
+            height: 150px;
+            background-color: #f2f2f2;
+            border: 2px solid #000;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .dino {
+            position: absolute;
+            bottom: 0;
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background-color: green;
+        }
+
+        .obstacle {
+            position: absolute;
+            bottom: 0;
+            right: -50px;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            animation: moveObstacle 2s infinite linear;
+        }
+
+        .coin {
+            position: absolute;
+            bottom: 50px;
+            right: -50px;
+            width: 30px;
+            height: 30px;
+            background-color: gold;
+            border-radius: 50%;
+            animation: moveCoin 2s infinite linear;
+        }
+
+        @keyframes moveObstacle {
+            from {
+                right: -50px;
+            }
+            to {
+                right: 100%;
+            }
+        }
+
+        @keyframes moveCoin {
+            from {
+                right: -50px;
+            }
+            to {
+                right: 100%;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #status p {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="game-container">
@@ -22,6 +108,122 @@
         <p id="game-over" class="hidden">Game Over! Tekan Spasi untuk mulai lagi.</p>
     </div>
 
-    <script src="assets/js/dino-game.js"></script>
+    <script>
+        let dino = document.getElementById('dino');
+        let obstacle = document.getElementById('obstacle');
+        let coin = document.getElementById('coin');
+        let scoreElement = document.getElementById('score');
+        let livesElement = document.getElementById('lives');
+        let gameOverElement = document.getElementById('game-over');
+        let invincibleElement = document.getElementById('invincible');
+
+        let score = 0;
+        let lives = 5;
+        let isJumping = false;
+        let isInvincible = false; // Status kebal
+        let invincibleDuration = 5000; // 5 detik kebal
+        let regenInterval = 60000; // 1 menit regen hati
+
+        // Memulai game
+        function startGame() {
+            obstacle.style.animation = "moveObstacle 2s infinite linear";
+            coin.style.animation = "moveCoin 2s infinite linear";
+            gameOverElement.classList.add('hidden');
+            dino.style.bottom = "0px";
+            document.addEventListener('keydown', jump);
+            obstacle.style.right = '-50px';
+            coin.style.right = '-50px';
+            score = 0;
+            lives = 5;
+            updateStatus();
+            setInterval(regenerateHearts, regenInterval); // Mulai regen hati
+        }
+
+        // Fungsi untuk membuat dino melompat
+        function jump(event) {
+            if (event.keyCode === 32 && !isJumping && !isInvincible) { // Spasi untuk melompat
+                isJumping = true;
+                dino.style.bottom = '100px'; // Posisi lompat
+                setTimeout(() => {
+                    dino.style.bottom = '0px'; // Kembali ke bawah
+                    isJumping = false;
+                }, 500); // Durasi lompat
+            }
+        }
+
+        // Fungsi untuk mendeteksi tabrakan dengan obstacle
+        function checkCollision() {
+            if (isInvincible) return; // Tidak ada tabrakan jika kebal
+            let dinoPosition = dino.getBoundingClientRect();
+            let obstaclePosition = obstacle.getBoundingClientRect();
+            
+            if (dinoPosition.left < obstaclePosition.right &&
+                dinoPosition.right > obstaclePosition.left &&
+                dinoPosition.bottom > obstaclePosition.top) {
+                lives--;
+                if (lives <= 0) {
+                    gameOverElement.classList.remove('hidden');
+                    obstacle.style.animation = "none";
+                    coin.style.animation = "none";
+                    document.removeEventListener('keydown', jump);
+                }
+                updateStatus();
+            }
+        }
+
+        // Fungsi untuk mengumpulkan koin
+        function collectCoin() {
+            let dinoPosition = dino.getBoundingClientRect();
+            let coinPosition = coin.getBoundingClientRect();
+
+            if (dinoPosition.left < coinPosition.right &&
+                dinoPosition.right > coinPosition.left &&
+                dinoPosition.bottom > coinPosition.top) {
+                score++;
+                updateStatus();
+                coin.style.right = '-50px'; // Reset posisi koin
+            }
+        }
+
+        // Fungsi untuk memperbarui status (skor dan hati)
+        function updateStatus() {
+            scoreElement.innerText = `Skor: ${score}`;
+            livesElement.innerText = `Hati: ${lives}`;
+        }
+
+        // Fungsi untuk regenerasi hati tiap menit
+        function regenerateHearts() {
+            if (lives < 5) {
+                lives++;
+                updateStatus();
+            }
+        }
+
+        // Efek kebal setelah satu menit
+        function activateInvincibility() {
+            isInvincible = true;
+            invincibleElement.classList.remove('hidden');
+            setTimeout(() => {
+                isInvincible = false;
+                invincibleElement.classList.add('hidden');
+            }, invincibleDuration);
+        }
+
+        // Mengecek tabrakan dan koin setiap 10ms
+        setInterval(() => {
+            checkCollision();
+            collectCoin();
+        }, 10);
+
+        // Mulai game saat menekan spasi pertama kali
+        document.addEventListener('keydown', (event) => {
+            if (event.keyCode === 32 && gameOverElement.classList.contains('hidden')) {
+                startGame();
+            }
+        });
+
+        // Mengaktifkan efek kebal setelah 1 menit
+        setInterval(activateInvincibility, 60000); // 1 menit
+    </script>
 </body>
-</html>
+                </html>
