@@ -33,6 +33,7 @@
             border: 2px solid #000;
             overflow: hidden;
             margin-top: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .dino {
@@ -41,7 +42,9 @@
             left: 50px;
             width: 50px;
             height: 50px;
-            background-color: green;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            transition: bottom 0.3s ease-in-out;
         }
 
         .obstacle {
@@ -101,6 +104,7 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
         .btn:hover {
@@ -115,17 +119,44 @@
 
         .jump-btn {
             margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 15px 25px;
+            font-size: 20px;
             background-color: #008CBA;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
         }
 
         .jump-btn:hover {
             background-color: #007B9A;
+            transform: scale(1.1);
+        }
+
+        .jump-btn:active {
+            transform: scale(0.9);
+        }
+
+        .start-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        .start-btn:active {
+            transform: scale(0.9);
         }
     </style>
 </head>
@@ -142,8 +173,8 @@
             <p id="lives">Hati: 5</p>
             <p id="invincible" class="hidden">Dino Kebal!</p>
         </div>
-        <button class="btn" id="startButton">Mulai Game</button>
-        <button class="jump-btn hidden" id="jumpButton">Loncat</button>
+        <button class="start-btn" id="startButton">Mulai Game</button>
+        <button class="jump-btn hidden" id="jumpButton">Loncat!</button>
         <p id="game-over" class="hidden">Game Over! Tekan Mulai untuk bermain lagi.</p>
     </div>
 
@@ -161,45 +192,42 @@
         let score = 0;
         let lives = 5;
         let isJumping = false;
-        let isInvincible = false; // Status kebal
-        let invincibleDuration = 5000; // 5 detik kebal
-        let regenInterval = 60000; // 1 menit regen hati
+        let isInvincible = false;
+        let invincibleDuration = 5000;
+        let regenInterval = 60000;
 
-        // Memulai game
         function startGame() {
             obstacle.style.animation = "moveObstacle 2s infinite linear";
             coin.style.animation = "moveCoin 2s infinite linear";
             gameOverElement.classList.add('hidden');
             dino.style.bottom = "0px";
-            document.addEventListener('keydown', jump); // Menambahkan event listener untuk loncat dengan spasi
+            document.addEventListener('keydown', jump);
             obstacle.style.right = '-50px';
             coin.style.right = '-50px';
             score = 0;
             lives = 5;
             updateStatus();
-            setInterval(regenerateHearts, regenInterval); // Mulai regen hati
-            startButton.disabled = true; // Nonaktifkan tombol mulai setelah game dimulai
-            jumpButton.classList.remove('hidden'); // Menampilkan tombol loncat
+            setInterval(regenerateHearts, regenInterval);
+            startButton.disabled = true;
+            jumpButton.classList.remove('hidden');
         }
 
-        // Fungsi untuk membuat dino melompat
         function jump() {
-            if (!isJumping && !isInvincible) { // Jika tidak sedang lompat dan tidak kebal
+            if (!isJumping && !isInvincible) {
                 isJumping = true;
-                dino.style.bottom = '100px'; // Posisi lompat
+                dino.style.bottom = '100px';
                 setTimeout(() => {
-                    dino.style.bottom = '0px'; // Kembali ke bawah
+                    dino.style.bottom = '0px';
                     isJumping = false;
-                }, 500); // Durasi lompat
+                }, 500);
             }
         }
 
-        // Fungsi untuk mendeteksi tabrakan dengan obstacle
         function checkCollision() {
-            if (isInvincible) return; // Tidak ada tabrakan jika kebal
+            if (isInvincible) return;
             let dinoPosition = dino.getBoundingClientRect();
             let obstaclePosition = obstacle.getBoundingClientRect();
-            
+
             if (dinoPosition.left < obstaclePosition.right &&
                 dinoPosition.right > obstaclePosition.left &&
                 dinoPosition.bottom > obstaclePosition.top) {
@@ -209,14 +237,13 @@
                     obstacle.style.animation = "none";
                     coin.style.animation = "none";
                     document.removeEventListener('keydown', jump);
-                    startButton.disabled = false; // Aktifkan tombol mulai setelah game selesai
-                    jumpButton.classList.add('hidden'); // Sembunyikan tombol loncat saat game over
+                    startButton.disabled = false;
+                    jumpButton.classList.add('hidden');
                 }
                 updateStatus();
             }
         }
 
-        // Fungsi untuk mengumpulkan koin
         function collectCoin() {
             let dinoPosition = dino.getBoundingClientRect();
             let coinPosition = coin.getBoundingClientRect();
@@ -226,17 +253,15 @@
                 dinoPosition.bottom > coinPosition.top) {
                 score++;
                 updateStatus();
-                coin.style.right = '-50px'; // Reset posisi koin
+                coin.style.right = '-50px';
             }
         }
 
-        // Fungsi untuk memperbarui status (skor dan hati)
         function updateStatus() {
             scoreElement.innerText = `Skor: ${score}`;
             livesElement.innerText = `Hati: ${lives}`;
         }
 
-        // Fungsi untuk regenerasi hati tiap menit
         function regenerateHearts() {
             if (lives < 5) {
                 lives++;
@@ -244,7 +269,6 @@
             }
         }
 
-        // Efek kebal setelah satu menit
         function activateInvincibility() {
             isInvincible = true;
             invincibleElement.classList.remove('hidden');
@@ -254,19 +278,15 @@
             }, invincibleDuration);
         }
 
-        // Mengecek tabrakan dan koin setiap 10ms
         setInterval(() => {
             checkCollision();
             collectCoin();
         }, 10);
 
-        // Mengaktifkan efek kebal setelah 1 menit
-        setInterval(activateInvincibility, 60000); // 1 menit
+        setInterval(activateInvincibility, 60000);
 
-        // Mulai game saat tombol mulai diklik
         startButton.addEventListener('click', startGame);
 
-        // Menambahkan event listener pada tombol loncat
         jumpButton.addEventListener('click', jump);
     </script>
 </body>
