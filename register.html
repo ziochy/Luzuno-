@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Luzuno</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        function register() {
+            let username = document.getElementById("reg-username").value.trim();
+            let password = document.getElementById("reg-password").value.trim();
+            
+            if (username === "" || password === "") {
+                alert("Username dan password tidak boleh kosong!");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("users")) || {};
+
+            if (users[username]) {
+                alert("Username sudah terdaftar! Silakan gunakan username lain.");
+                return;
+            }
+
+            users[username] = password;
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert("Pendaftaran berhasil! Silakan login.");
+            window.location.href = "login.html";
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Daftar Akun Luzuno</h2>
+        <input type="text" id="reg-username" placeholder="Buat Username">
+        <input type="password" id="reg-password" placeholder="Buat Password">
+        <button onclick="register()">Daftar</button>
+        <p>Sudah punya akun? <a href="login.html">Login</a></p>
+    </div>
+</body>
+</html>
