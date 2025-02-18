@@ -205,42 +205,7 @@
             // Menampilkan nilai akhir
             document.getElementById('score').innerText = `Nilai Anda: ${score} / ${questions.length}`;
         }
-    </script>
-</head>
-<body>
-    <header>
-        <h1>Latihan Bahasa Jepang (Renshuu)</h1>
-    </header>
-
-    <main>
-        <form id="questionForm">
-            <div id="questionsContainer"></div>
-            <button type="button" onclick="checkAnswers()">Nilai</button>
-        </form>
-        <div id="score"></div>
-    </main>
-
-    <script>
-        // Menampilkan soal di halaman
-        const questionsContainer = document.getElementById('questionsContainer');
-        questions.forEach((question, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.innerHTML = `
-                <p>${question.question}</p>
-                ${question.options.map(option => `
-                    <label>
-                        <input type="radio" name="question${index}" value="${option}" class="answer">
-                        ${option}
-                    </label><br>
-                `).join('')}
-                <div id="feedback-${index}" style="color: red;"></div>
-                <hr>
-            `;
-            questionsContainer.appendChild(questionDiv);
-        });
-    </script>
-
-    <footer>
+    <
         <p>&copy; 2025 Luzuno. Semua Hak Dilindungi.</p>
     </footer>
     
@@ -257,3 +222,4 @@
         }
     </script>
 </body>
+             ziochy 
