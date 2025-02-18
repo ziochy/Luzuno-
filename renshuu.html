@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renshuu - Latihan Soal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        .question-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .question {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .options label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        #submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #score {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Renshuu - Latihan Soal Bahasa Jepang</h1>
+    <p>Jawab 20 soal acak dan lihat hasilnya!</p>
+
+    <div id="quiz-container"></div>
+
+    <button id="submit-btn" onclick="checkAnswers()">Cek Nilai</button>
+    <p id="score"></p>
+
+    <script>
+        // 100 Soal dengan Jawaban Benar
+        const questions = [
+            { question: "Kanji untuk 'air' adalah?", options: ["火", "水", "木", "土"], answer: "水" },
+            { question: "Hiragana untuk 'kawaii' adalah?", options: ["かわいい", "かこいい", "たのしい", "すごい"], answer: "かわいい" },
+            { question: "Arti dari '先生' adalah?", options: ["Dokter", "Guru", "Polisi", "Siswa"], answer: "Guru" },
+            { question: "Kanji untuk 'matahari' adalah?", options: ["月", "星", "日", "空"], answer: "日" },
+            { question: "Apa arti dari 'ねこ'?", options: ["Kucing", "Anjing", "Burung", "Ikan"], answer: "Kucing" },
+            { question: "Kanji untuk 'gunung' adalah?", options: ["川", "山", "海", "森"], answer: "山" },
+            { question: "Arti dari '本' dalam bahasa Jepang?", options: ["Buku", "Pohon", "Rumah", "Mobil"], answer: "Buku" },
+            { question: "Kanji untuk 'bulan' adalah?", options: ["日", "月", "空", "星"], answer: "月" },
+            { question: "Hiragana untuk 'ohayou' adalah?", options: ["おはよう", "おやすみ", "こんにちは", "こんばんは"], answer: "おはよう" },
+            { question: "Kanji untuk 'hutan' adalah?", options: ["川", "森", "山", "空"], answer: "森" },
+            // Tambahkan 90 soal lainnya sesuai kebutuhan
+        ];
+
+        // Acak Soal & Ambil 20 Soal
+        function getRandomQuestions() {
+            let shuffled = questions.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 20);
+        }
+
+        const selectedQuestions = getRandomQuestions();
+        const quizContainer = document.getElementById("quiz-container");
+
+        // Tampilkan Soal
+        selectedQuestions.forEach((q, index) => {
+            let questionElement = document.createElement("div");
+            questionElement.classList.add("question-container");
+            questionElement.innerHTML = `
+                <p class="question">${index + 1}. ${q.question}</p>
+                <div class="options">
+                    ${q.options.map(opt => `<label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label>`).join("")}
+                </div>
+            `;
+            quizContainer.appendChild(questionElement);
+        });
+
+        // Cek Jawaban & Hitung Nilai
+        function checkAnswers() {
+            let score = 0;
+            selectedQuestions.forEach((q, index) => {
+                let selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selectedOption && selectedOption.value === q.answer) {
+                    score++;
+                }
+            });
+            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 20`;
+        }
+    </script>
+</body>
+</html>
