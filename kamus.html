@@ -142,3 +142,30 @@
     </footer>
 </body>
 </html>
+
+<script>
+    // Fungsi untuk menyimpan catatan ke localStorage
+    function saveNote() {
+        let note = document.getElementById("userNote").value;
+        localStorage.setItem("userNote", note);
+        alert("Catatan berhasil disimpan!");
+    }
+
+    // Fungsi untuk menampilkan catatan yang sudah disimpan
+    function loadNote() {
+        let savedNote = localStorage.getItem("userNote");
+        if (savedNote) {
+            document.getElementById("userNote").value = savedNote;
+        }
+    }
+
+    // Fungsi untuk menghapus catatan
+    function clearNote() {
+        localStorage.removeItem("userNote");
+        document.getElementById("userNote").value = "";
+        alert("Catatan telah dihapus!");
+    }
+
+    // Memuat catatan saat halaman dibuka
+    window.onload = loadNote;
+</script>
