@@ -157,11 +157,11 @@
 { question: "Apa arti dari '時間'?", options: ["Waktu", "Tempat", "Cuaca", "Hari"], answer: "Waktu" },
 { question: "Hiragana untuk 'ookii' (大きい) adalah?", options: ["おおきい", "ちいさい", "みじかい", "あかるい"], answer: "おおきい" },// Tambahkan 90 soal lainnya sesuai kebutuhan
         ];
-            
-        // Acak Soal & Ambil 20 Soal
-        function getRandomQuestions() {
+
+        // Acak Soal & Ambil 30 Soal
+        function getRandomQuestions(30) {
             let shuffled = questions.sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, 20);
+            return shuffled.slice(0, 30);
         }
 
         const selectedQuestions = getRandomQuestions();
@@ -189,9 +189,9 @@
                     score++;
                 }
             });
-            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 20`;
+            document.getElementById("score").textContent = `Nilai Kamu: ${score} / 30`;
         }
-                
     </script>
 </body>
 </html>
+    
