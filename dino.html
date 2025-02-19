@@ -50,11 +50,7 @@
         const warning = document.getElementById('warning');
 
         function checkOrientation() {
-            if (window.innerWidth < 600) {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
+            warning.style.display = window.innerWidth < 600 ? 'block' : 'none';
         }
         window.addEventListener('resize', checkOrientation);
         checkOrientation();
@@ -69,32 +65,28 @@
             { src: 'mobil3.png', chance: 15, heal: false },
             { src: 'mobil4.png', chance: 15, heal: false },
             { src: 'mobil5.gif', chance: 15, heal: false },
-            { src: 'mobil6.png', chance: 10, heal: true } // mobil6.png bisa menambah nyawa
+            { src: 'mobil6.png', chance: 10, heal: true }
         ];
 
         const bgImg = new Image();
         bgImg.src = 'background.png';
 
-        const heartImg = new Image();
-        heartImg.src = 'heart.png'; 
-
         let gameRunning = false;
         let speedMultiplier = 1;
-        let speedIncreaseInterval;
         let score = 0;
         let lives = 3;
         let invincibleTime = 0;
 
         let dino = {
-            x: 50, 
-            y: 150,  
-            width: 60, 
-            height: 60, 
-            velocityY: 0, 
-            gravity: 0.6,  
-            jumpPower: -10,  
+            x: 50,
+            y: 150,
+            width: 60,
+            height: 60,
+            velocityY: 0,
+            gravity: 0.6,
+            jumpPower: -10,
             isJumping: false,
-            groundY: 150,  
+            groundY: 150,
         };
 
         let obstacles = [];
@@ -108,18 +100,18 @@
                     return car;
                 }
             }
-            return carImages[0]; 
+            return carImages[0];
         }
 
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
             let car = getRandomCar();
-            
+
             let newObstacle = {
-                x: lastX + Math.random() * 300 + 200, 
-                y: dino.groundY + 30,  
-                width: 50,  
-                height: 30,  
+                x: lastX + Math.random() * 300 + 200,
+                y: dino.groundY + 30,
+                width: 50,
+                height: 30,
                 speed: 5,
                 image: new Image(),
                 heal: car.heal
@@ -148,26 +140,15 @@
                 dino.velocityY = 0;
                 obstacles = [];
                 score = 0;
-                lives = 3; 
+                lives = 3;
                 speedMultiplier = 1;
                 invincibleTime = 0;
-
-                clearInterval(speedIncreaseInterval);
-                speedIncreaseInterval = setInterval(increaseSpeed, 5000);
 
                 for (let i = 0; i < 3; i++) {
                     spawnObstacle();
                 }
 
-                updateGame();
-            }
-        }
-
-        function increaseSpeed() {
-            if (speedMultiplier < 1.2) {
-                speedMultiplier += 0.02;
-            } else {
-                clearInterval(speedIncreaseInterval);
+                requestAnimationFrame(updateGame);
             }
         }
 
@@ -181,11 +162,10 @@
             checkCollision();
             drawDino();
             drawObstacles();
-            updateScore();
             drawScore();
             drawLives();
 
-            invincibleTime--; 
+            invincibleTime--;
             requestAnimationFrame(updateGame);
         }
 
@@ -197,7 +177,7 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            if (dino.y > dino.groundY) { 
+            if (dino.y > dino.groundY) {
                 dino.y = dino.groundY;
                 dino.isJumping = false;
                 dino.velocityY = 0;
@@ -239,12 +219,23 @@
 
                     if (lives <= 0) {
                         gameRunning = false;
-                        clearInterval(speedIncreaseInterval);
                         alert('Game Over! Skor Anda: ' + score);
                     }
                     return;
                 }
             }
+        }
+
+        function drawScore() {
+            ctx.fillStyle = "black";
+            ctx.font = "20px Arial";
+            ctx.fillText("Score: " + score, 20, 30);
+        }
+
+        function drawLives() {
+            ctx.fillStyle = "red";
+            ctx.font = "20px Arial";
+            ctx.fillText("Lives: " + lives, 600, 30);
         }
     </script>
 </body>
