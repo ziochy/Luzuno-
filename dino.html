@@ -1,18 +1,99 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Dino</title>
-    <link rel="stylesheet" href="dino.css">
+    <title>Dino Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            background-color: #fff;
+            border: 2px solid black;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="hearts"></div>
-        <canvas id="gameCanvas"></canvas>
-        <button id="jumpButton">Lompat</button>
-        <button id="shieldButton">Kebal 5 Detik</button>
-    </div>
-    <script src="dino.js"></script>
+    <canvas id="gameCanvas" width="800" height="200"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Load Images
+        const dinoImg = new Image();
+        dinoImg.src = 'dino.png';
+
+        const cactusImg = new Image();
+        cactusImg.src = 'kaktus.png';
+
+        const bgImg = new Image();
+        bgImg.src = 'background.png';
+
+        // Dino
+        let dino = { x: 50, y: 150, width: 40, height: 40, velocityY: 0, gravity: 0.8, jumpPower: -12, isJumping: false };
+
+        // Kaktus
+        let cactus = { x: canvas.width, y: 160, width: 30, height: 40, speed: 3 };
+
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && !dino.isJumping) {
+                dino.isJumping = true;
+                dino.velocityY = dino.jumpPower;
+            }
+        });
+
+        function updateGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); // Gambar background
+            moveDino();
+            moveCactus();
+            checkCollision();
+            drawDino();
+            drawCactus();
+            requestAnimationFrame(updateGame);
+        }
+
+        function drawDino() {
+            ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+        }
+
+        function moveDino() {
+            dino.y += dino.velocityY;
+            dino.velocityY += dino.gravity;
+
+            if (dino.y > 150) { 
+                dino.y = 150;
+                dino.isJumping = false;
+            }
+        }
+
+        function drawCactus() {
+            ctx.drawImage(cactusImg, cactus.x, cactus.y, cactus.width, cactus.height);
+        }
+
+        function moveCactus() {
+            cactus.x -= cactus.speed;
+            if (cactus.x < -cactus.width) {
+                cactus.x = canvas.width + Math.random() * 200; // Kaktus muncul lagi secara acak
+            }
+        }
+
+        function checkCollision() {
+            if (dino.x < cactus.x + cactus.width &&
+                dino.x + dino.width > cactus.x &&
+                dino.y + dino.height > cactus.y) {
+                alert('Game Over!');
+                document.location.reload();
+            }
+        }
+
+        updateGame();
+    </script>
 </body>
 </html>
