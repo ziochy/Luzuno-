@@ -74,14 +74,17 @@
 
         let dino = {
             x: 50, 
-            y: 150,  // Posisi awal lebih tinggi agar sejajar dengan mobil
+            y: 150,  
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.6,  // Gravitasi untuk membuat jatuh lebih alami
-            jumpPower: -10,  // Kekuatan lompat yang moderat
+            gravity: 0.6,  
+            jumpPower: -12,  
             isJumping: false,
-            groundY: 150,  // Posisi tanah
+            groundY: 150,  
+            maxJumpHeight: 80, 
+            moveSpeed: 4,  // Kecepatan gerak maju/mundur
+            moveDirection: 0  // -1 untuk mundur, 1 untuk maju, 0 untuk diam
         };
 
         let obstacles = [];
@@ -91,17 +94,26 @@
             
             let newObstacle = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: dino.groundY + 30,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
+                y: dino.groundY + 30,  
                 width: 50,  
                 height: 30,  
-                speed: 5  
+                speed: 3  
             };
             obstacles.push(newObstacle);
         }
 
         document.getElementById('startButton').addEventListener('click', startGame);
         document.getElementById('jumpButton').addEventListener('click', jump);
-        document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
+        
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') jump();
+            if (event.code === 'ArrowRight') dino.moveDirection = 1;
+            if (event.code === 'ArrowLeft') dino.moveDirection = -1;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            if (event.code === 'ArrowRight' || event.code === 'ArrowLeft') dino.moveDirection = 0;
+        });
 
         function jump() {
             if (!gameRunning) return;
@@ -156,14 +168,32 @@
         }
 
         function moveDino() {
+            // Gerakan maju dan mundur
+            dino.x += dino.moveDirection * dino.moveSpeed;
+
+            // Batasi agar tidak keluar dari layar
+            if (dino.x < 0) dino.x = 0;
+            if (dino.x > canvas.width - dino.width) dino.x = canvas.width - dino.width;
+
+            // Efek goyangan saat bergerak
+            if (dino.moveDirection !== 0 && !dino.isJumping) {
+                dino.y = dino.groundY + Math.sin(Date.now() / 100) * 2; 
+            } else {
+                dino.y = dino.groundY;
+            }
+
+            // Logika lompatan
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            // Pastikan Dino tetap berada di tanah setelah melompat
-            if (dino.y > dino.groundY) { 
+            if (dino.y < dino.groundY - dino.maxJumpHeight) {
+                dino.y = dino.groundY - dino.maxJumpHeight;
+                dino.velocityY = 0;
+            }
+
+            if (dino.y > dino.groundY) {
                 dino.y = dino.groundY;
                 dino.isJumping = false;
-                dino.velocityY = 0;
             }
         }
 
@@ -186,25 +216,11 @@
 
         function checkCollision() {
             for (let obstacle of obstacles) {
-                let dinoHitbox = {
-                    x: dino.x + 10,
-                    y: dino.y + 10,
-                    width: 40,
-                    height: 50
-                };
-
-                let obstacleHitbox = {
-                    x: obstacle.x,
-                    y: obstacle.y,
-                    width: obstacle.width,
-                    height: obstacle.height
-                };
-
                 if (
-                    dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
-                    dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
-                    dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
-                    dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
+                    dino.x < obstacle.x + obstacle.width &&
+                    dino.x + dino.width > obstacle.x &&
+                    dino.y < obstacle.y + obstacle.height &&
+                    dino.y + dino.height > obstacle.y
                 ) {
                     alert('Game Over!');
                     gameRunning = false;
@@ -215,4 +231,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
