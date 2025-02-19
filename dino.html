@@ -78,20 +78,25 @@
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.9,  
+            gravity: 0.5,  
             jumpPower: -10,  
             isJumping: false,
             groundY: 150,  // Posisi tanah
-            maxJumpHeight: 70  // Ketinggian maksimal lompatan
+            maxJumpHeight: 80  // Ketinggian maksimal lompatan
         };
 
-        let newObstacle = {
-       x: lastX + Math.random() * 200 + 150, 
-       y: dino.groundY + (dino.height - 30),  // Sesuaikan posisi y mobil agar sejajar dengan dinosaurus
-       width: 50,  
-       height: 30,  
-       speed: 3  
-   };
+        let obstacles = [];
+
+        function spawnObstacle() {
+            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+            
+            let newObstacle = {
+                x: lastX + Math.random() * 200 + 150, 
+                y: dino.groundY + 20,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
+                width: 50,  
+                height: 30,  
+                speed: 3  
+            };
             obstacles.push(newObstacle);
         }
 
