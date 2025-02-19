@@ -49,7 +49,7 @@
             { src: 'mobil2.png', chance: 15 },
             { src: 'mobil3.png', chance: 15 },
             { src: 'mobil4.png', chance: 15 },
-            { src: 'mobil5.gif', chance: 15 },  // Ganti mobil5.png menjadi mobil5.gif
+            { src: 'mobil5.gif', chance: 15 },
             { src: 'mobil6.png', chance: 10 }
         ];
 
@@ -156,7 +156,10 @@
         }
 
         function updateGame() {
-            if (!gameRunning) return;
+            if (!gameRunning) {
+                console.log("Game stopped.");
+                return;
+            }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
@@ -198,7 +201,6 @@
                 obstacles[i].x -= obstacles[i].speed * speedMultiplier;
             }
 
-            // Pastikan spawn mobil hanya terjadi saat ada ruang kosong untuk mobil baru
             if (obstacles.length > 0 && obstacles[0].x < -obstacles[0].width) {
                 obstacles.shift();
                 spawnObstacle();
