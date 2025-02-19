@@ -85,18 +85,13 @@
             maxJumpHeight: 70  // Ketinggian maksimal lompatan
         };
 
-        let obstacles = [];
-
-        function spawnObstacle() {
-            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
-            
-            let newObstacle = {
-                x: lastX + Math.random() * 200 + 150, 
-                y: dino.groundY-5,  // Posisi mobil disamakan dengan posisi tanah Dino
-                width: 50,  
-                height: 30,  
-                speed: 3  
-            };
+        let newObstacle = {
+       x: lastX + Math.random() * 200 + 150, 
+       y: dino.groundY + (dino.height - 30),  // Sesuaikan posisi y mobil agar sejajar dengan dinosaurus
+       width: 50,  
+       height: 30,  
+       speed: 3  
+   };
             obstacles.push(newObstacle);
         }
 
