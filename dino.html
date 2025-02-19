@@ -74,13 +74,14 @@
 
         let dino = {
             x: 50, 
-            y: 190,  // Disesuaikan agar Dino benar-benar menyentuh tanah
+            y: 65,  // Posisi awal Dino diubah ke 65
             width: 60, 
             height: 60, 
             velocityY: 0, 
             gravity: 0.5,  
-            jumpPower: -14, 
-            isJumping: false 
+            jumpPower: -10,  // Lompat dikurangi agar tidak mentok atap
+            isJumping: false,
+            maxJumpHeight: 20  // Ketinggian maksimal yang diperbolehkan
         };
 
         let obstacles = [];
@@ -90,7 +91,7 @@
             
             let newObstacle = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: 190, // Disesuaikan agar sejajar dengan Dino
+                y: 65, // Sejajar dengan Dino
                 width: 50,  
                 height: 30,  
                 speed: 3  
@@ -113,7 +114,7 @@
         function startGame() {
             if (!gameRunning) {
                 gameRunning = true;
-                dino.y = 190;
+                dino.y = 65;
                 dino.velocityY = 0;
                 obstacles = [];
                 speedMultiplier = 1;
@@ -158,8 +159,13 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            if (dino.y > 190) { // Dino benar-benar menyentuh tanah
-                dino.y = 190;
+            if (dino.y < dino.maxJumpHeight) { // Batas atas supaya tidak mentok atap
+                dino.y = dino.maxJumpHeight;
+                dino.velocityY = 0;
+            }
+
+            if (dino.y > 65) { // Dino tetap sejajar dengan mobil
+                dino.y = 65;
                 dino.isJumping = false;
             }
         }
