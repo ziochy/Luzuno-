@@ -68,6 +68,7 @@
             { src: 'mobil2.png', chance: 15, heal: false },
             { src: 'mobil3.png', chance: 15, heal: false },
             { src: 'mobil4.png', chance: 15, heal: false },
+            { src: 'mobil5.gif', chance: 15, heal: false },
             { src: 'mobil6.png', chance: 10, heal: true } // mobil6.png bisa menambah nyawa
         ];
 
@@ -82,7 +83,7 @@
         let speedIncreaseInterval;
         let score = 0;
         let lives = 3;
-        let invincibleTime = 0; // Cooldown kebal setelah tabrakan
+        let invincibleTime = 0;
 
         let dino = {
             x: 50, 
@@ -107,7 +108,7 @@
                     return car;
                 }
             }
-            return carImages[0]; // Fallback ke mobil pertama jika ada kesalahan
+            return carImages[0]; 
         }
 
         function spawnObstacle() {
@@ -149,7 +150,7 @@
                 score = 0;
                 lives = 3; 
                 speedMultiplier = 1;
-                invincibleTime = 0; 
+                invincibleTime = 0;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
@@ -237,9 +238,9 @@
                     }
 
                     if (lives <= 0) {
-                        alert('Game Over! Skor Anda: ' + score);
                         gameRunning = false;
                         clearInterval(speedIncreaseInterval);
+                        alert('Game Over! Skor Anda: ' + score);
                     }
                     return;
                 }
