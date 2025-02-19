@@ -231,10 +231,10 @@
                             lives++; // Menambah nyawa jika mobil6.png
                         }
                     } else {
-                        lives--; 
+                        lives--; // Kurangi nyawa jika kena mobil selain mobil6.png
                     }
 
-                    invincibleTime = 60; 
+                    invincibleTime = 60; // Tambahkan waktu kebal setelah tabrakan
 
                     if (lives <= 0) {
                         alert('Game Over! Skor Anda: ' + score);
