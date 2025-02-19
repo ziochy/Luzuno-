@@ -78,11 +78,11 @@
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.5,  
-            jumpPower: -10,  
+            gravity: 0.2,  // Menurunkan gravitasi agar jatuh lebih pelan
+            jumpPower: -12,  // Menurunkan kekuatan lompatan sedikit
             isJumping: false,
             groundY: 150,  // Posisi tanah
-            maxJumpHeight: 70  // Ketinggian maksimal lompatan
+            maxJumpHeight: 80  // Ketinggian maksimal lompatan
         };
 
         let obstacles = [];
@@ -92,7 +92,228 @@
             
             let newObstacle = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: dino.groundY + 30,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
+                y: dino.groundY + 20,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
+                width: 50,  
+                height: 30,  
+                speed: 3  
+            };
+            obstacles.push(newObstacle);
+        }
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.getElementById('jumpButton').addEventListener('click', jump);
+        document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
+
+        function jump() {
+            if (!gameRunning) return;
+            if (!dino.isJumping) {
+                dino.isJumping = true;
+                dino.velocityY = dino.jumpPower;
+            }
+        }
+
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                dino.y = dino.groundY;
+                dino.velocityY = 0;
+                obstacles = [];
+                speedMultiplier = 1;
+
+                clearInterval(speedIncreaseInterval);
+                speedIncreaseInterval = setInterval(increaseSpeed, 5000);
+
+                for (let i = 0; i < 3; i++) {
+                    spawnObstacle();
+                }
+
+                updateGame();
+            }
+        }
+
+        function increaseSpeed() {
+            if (speedMultiplier < 1.2) {
+                speedMultiplier += 0.02;
+            } else {
+                clearInterval(speedIncreaseInterval);
+            }
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+            moveDino();
+            moveObstacles();
+            checkCollision();
+            drawDino();
+            drawObstacles();
+            requestAnimationFrame(updateGame);
+        }
+
+        function drawDino() {
+            ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+        }
+
+        function moveDino() {
+            dino.y += dino.velocityY;
+            dino.velocityY += dino.gravity;
+
+            if (dino.y < dino.groundY - dino.maxJumpHeight) { // Batasi lompatan agar tidak mentok atap
+                dino.y = dino.groundY - dino.maxJumpHeight;
+                dino.velocityY = 0;
+            }
+
+            if (dino.y > dino.groundY) { // Pastikan Dino turun kembali ke tanah
+                dino.y = dino.groundY;
+                dino.isJumping = false;
+            }
+        }
+
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+        }
+
+        function moveObstacles() {
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].x -= obstacles[i].speed * speedMultiplier;
+            }
+
+            if (obstacles.length > 0 && obstacles[0].x < -obstacles[0].width) {
+                obstacles.shift();
+                spawnObstacle();
+            }
+        }
+
+        function checkCollision() {
+            for (let obstacle of obstacles) {
+                let dinoHitbox = {
+                    x: dino.x + 10,
+                    y: dino.y + 10,
+                    width: 40,
+                    height: 50
+                };
+
+                let obstacleHitbox = {
+                    x: obstacle.x,
+                    y: obstacle.y,
+                    width: obstacle.width,
+                    height: obstacle.height
+                };
+
+                if (
+                    dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
+                    dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
+                    dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
+                    dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
+                ) {
+                    alert('Game Over!');
+                    gameRunning = false;
+                    clearInterval(speedIncreaseInterval);
+                    return;
+                }
+            }
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #warning {
+            display: none;
+            color: red;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        canvas {
+            background-color: #fff;
+            border: 2px solid black;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="warning">⚠️ Putar layar ke mode landscape untuk pengalaman terbaik!</div>
+    <canvas id="gameCanvas" width="700" height="250"></canvas>
+    <div class="controls">
+        <button id="startButton">Mulai</button>
+        <button id="jumpButton">Lompat</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const warning = document.getElementById('warning');
+
+        function checkOrientation() {
+            if (window.innerWidth < 600) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+        window.addEventListener('resize', checkOrientation);
+        checkOrientation();
+
+        const dinoImg = new Image();
+        dinoImg.src = 'dino.png';
+
+        const carImg = new Image();
+        carImg.src = 'mobil.png';
+
+        const bgImg = new Image();
+        bgImg.src = 'background.png';
+
+        let gameRunning = false;
+        let speedMultiplier = 1;
+        let speedIncreaseInterval;
+
+        let dino = {
+            x: 50, 
+            y: 150,  // Posisi awal lebih tinggi agar sejajar dengan mobil
+            width: 60, 
+            height: 60, 
+            velocityY: 0, 
+            gravity: 0.2,  // Menurunkan gravitasi agar jatuh lebih pelan
+            jumpPower: -10,  // Menurunkan kekuatan lompatan sedikit
+            isJumping: false,
+            groundY: 150,  // Posisi tanah
+            maxJumpHeight: 80  // Ketinggian maksimal lompatan
+        };
+
+        let obstacles = [];
+
+        function spawnObstacle() {
+            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+            
+            let newObstacle = {
+                x: lastX + Math.random() * 200 + 150, 
+                y: dino.groundY + 20,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
                 width: 50,  
                 height: 30,  
                 speed: 3  
