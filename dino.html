@@ -49,7 +49,7 @@
             { src: 'mobil2.png', chance: 15 },
             { src: 'mobil3.png', chance: 15 },
             { src: 'mobil4.png', chance: 15 },
-            { src: 'mobil5.png', chance: 15 },
+            { src: 'mobil5.gif', chance: 15 },  // Ganti mobil5.png menjadi mobil5.gif
             { src: 'mobil6.png', chance: 10 }
         ];
 
@@ -218,7 +218,7 @@
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
                     if (obstacle.src === 'mobil6.png') {
-                        lives++; 
+                        lives++;  // Tambah nyawa 1 meskipun sudah penuh
                     } else {
                         lives--;  
                         invincible = true;  
