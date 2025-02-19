@@ -71,17 +71,18 @@
         let gameRunning = false;
         let speedMultiplier = 1;
         let speedIncreaseInterval;
+        let score = 0; // Tambahkan variabel skor
 
         let dino = {
             x: 50, 
-            y: 150,  // Posisi awal lebih tinggi agar sejajar dengan mobil
+            y: 150,  
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.6,  // Gravitasi untuk membuat jatuh lebih alami
-            jumpPower: -10,  // Kekuatan lompat yang moderat
+            gravity: 0.6,  
+            jumpPower: -10,  
             isJumping: false,
-            groundY: 150,  // Posisi tanah
+            groundY: 150,  
         };
 
         let obstacles = [];
@@ -91,7 +92,7 @@
             
             let newObstacle = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: dino.groundY + 30,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
+                y: dino.groundY + 30,  
                 width: 50,  
                 height: 30,  
                 speed: 5  
@@ -117,6 +118,7 @@
                 dino.y = dino.groundY;
                 dino.velocityY = 0;
                 obstacles = [];
+                score = 0; // Reset skor saat mulai
                 speedMultiplier = 1;
 
                 clearInterval(speedIncreaseInterval);
@@ -148,6 +150,8 @@
             checkCollision();
             drawDino();
             drawObstacles();
+            updateScore(); // Update skor setiap frame
+            drawScore(); // Tampilkan skor di layar
             requestAnimationFrame(updateGame);
         }
 
@@ -159,7 +163,6 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            // Pastikan Dino tetap berada di tanah setelah melompat
             if (dino.y > dino.groundY) { 
                 dino.y = dino.groundY;
                 dino.isJumping = false;
@@ -206,12 +209,24 @@
                     dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
-                    alert('Game Over!');
+                    alert('Game Over! Skor Anda: ' + score);
                     gameRunning = false;
                     clearInterval(speedIncreaseInterval);
                     return;
                 }
             }
+        }
+
+        function updateScore() {
+            if (gameRunning) {
+                score += 1; // Tambahkan skor seiring waktu
+            }
+        }
+
+        function drawScore() {
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText('Skor: ' + score, canvas.width - 120, 30); // Menampilkan skor di pojok kanan atas
         }
     </script>
 </body>
