@@ -62,8 +62,15 @@
         const dinoImg = new Image();
         dinoImg.src = 'dino.png';
 
-        const carImg = new Image();
-        carImg.src = 'mobil.png';
+        const carImages = [
+            { src: 'mobil.png', chance: 30 },
+            { src: 'mobil1.png', chance: 30 },
+            { src: 'mobil2.png', chance: 20 },
+            { src: 'mobil3.png', chance: 30 },
+            { src: 'mobil4.png', chance: 15 },
+            { src: 'mobil5.png', chance: 10 },
+            { src: 'mobil6.png', chance: 4 }  // Mobil penyembuh
+        ];
 
         const bgImg = new Image();
         bgImg.src = 'background.png';
@@ -76,7 +83,7 @@
         let speedIncreaseInterval;
         let score = 0;
         let lives = 3;
-        let invincibleTime = 0; // Waktu kebal sementara setelah tabrakan
+        let invincibleTime = 0;
 
         let dino = {
             x: 50, 
@@ -92,15 +99,33 @@
 
         let obstacles = [];
 
+        function chooseCarImage() {
+            let random = Math.random() * 100;
+            let cumulativeChance = 0;
+
+            for (let car of carImages) {
+                cumulativeChance += car.chance;
+                if (random <= cumulativeChance) {
+                    let img = new Image();
+                    img.src = car.src;
+                    return { img, src: car.src };
+                }
+            }
+            return { img: new Image(), src: 'mobil.png' }; 
+        }
+
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
+            let car = chooseCarImage();
             
             let newObstacle = {
                 x: lastX + Math.random() * 300 + 200, 
                 y: dino.groundY + 30,  
                 width: 50,  
                 height: 30,  
-                speed: 5  
+                speed: 5,
+                img: car.img,
+                src: car.src
             };
             obstacles.push(newObstacle);
         }
@@ -126,7 +151,7 @@
                 score = 0;
                 lives = 3; 
                 speedMultiplier = 1;
-                invincibleTime = 0; // Reset waktu kebal
+                invincibleTime = 0;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
@@ -161,7 +186,7 @@
             drawScore();
             drawLives();
 
-            invincibleTime--; // Kurangi cooldown kebal setiap frame
+            invincibleTime--;
             requestAnimationFrame(updateGame);
         }
 
@@ -182,7 +207,7 @@
 
         function drawObstacles() {
             obstacles.forEach(obstacle => {
-                ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                ctx.drawImage(obstacle.img, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             });
         }
 
@@ -198,22 +223,11 @@
         }
 
         function checkCollision() {
-            if (invincibleTime > 0) return; // Cegah tabrakan jika masih dalam waktu kebal
+            if (invincibleTime > 0) return;
 
             for (let obstacle of obstacles) {
-                let dinoHitbox = {
-                    x: dino.x + 10,
-                    y: dino.y + 10,
-                    width: 40,
-                    height: 50
-                };
-
-                let obstacleHitbox = {
-                    x: obstacle.x,
-                    y: obstacle.y,
-                    width: obstacle.width,
-                    height: obstacle.height
-                };
+                let dinoHitbox = { x: dino.x + 10, y: dino.y + 10, width: 40, height: 50 };
+                let obstacleHitbox = { x: obstacle.x, y: obstacle.y, width: obstacle.width, height: obstacle.height };
 
                 if (
                     dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
@@ -221,9 +235,13 @@
                     dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
-                    lives--; 
-                    invincibleTime = 60; // Beri kebal 60 frame (~1 detik)
-                    
+                    if (obstacle.src === 'mobil6.png') {
+                        lives++;
+                    } else {
+                        lives--; 
+                        invincibleTime = 60; 
+                    }
+
                     if (lives <= 0) {
                         alert('Game Over! Skor Anda: ' + score);
                         gameRunning = false;
@@ -231,12 +249,6 @@
                     }
                     return;
                 }
-            }
-        }
-
-        function updateScore() {
-            if (gameRunning) {
-                score += 1;
             }
         }
 
