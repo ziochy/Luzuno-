@@ -14,13 +14,6 @@
             height: 100vh;
             background-color: #f0f0f0;
         }
-        #warning {
-            display: none;
-            color: red;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
         canvas {
             background-color: #fff;
             border: 2px solid black;
@@ -37,7 +30,6 @@
     </style>
 </head>
 <body>
-    <div id="warning">⚠️ Putar layar ke mode landscape untuk pengalaman terbaik!</div>
     <canvas id="gameCanvas" width="700" height="250"></canvas>
     <div class="controls">
         <button id="startButton">Mulai</button>
@@ -47,17 +39,6 @@
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const warning = document.getElementById('warning');
-
-        function checkOrientation() {
-            if (window.innerWidth < 600) {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
-        }
-        window.addEventListener('resize', checkOrientation);
-        checkOrientation();
 
         const dinoImg = new Image();
         dinoImg.src = 'dino.png';
@@ -69,21 +50,21 @@
             { src: 'mobil3.png', chance: 30 },
             { src: 'mobil4.png', chance: 15 },
             { src: 'mobil5.png', chance: 10 },
-            { src: 'mobil6.png', chance: 4 }  // Mobil penyembuh
+            { src: 'mobil6.png', chance: 4 } 
         ];
 
         const bgImg = new Image();
         bgImg.src = 'background.png';
 
         const heartImg = new Image();
-        heartImg.src = 'heart.png'; 
+        heartImg.src = 'heart.png';
 
         let gameRunning = false;
         let speedMultiplier = 1;
         let speedIncreaseInterval;
         let score = 0;
         let lives = 3;
-        let invincibleTime = 0;
+        let invincible = false;
 
         let dino = {
             x: 50, 
@@ -151,7 +132,7 @@
                 score = 0;
                 lives = 3; 
                 speedMultiplier = 1;
-                invincibleTime = 0;
+                invincible = false;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
@@ -186,7 +167,6 @@
             drawScore();
             drawLives();
 
-            invincibleTime--;
             requestAnimationFrame(updateGame);
         }
 
@@ -223,7 +203,7 @@
         }
 
         function checkCollision() {
-            if (invincibleTime > 0) return;
+            if (invincible) return;
 
             for (let obstacle of obstacles) {
                 let dinoHitbox = { x: dino.x + 10, y: dino.y + 10, width: 40, height: 50 };
@@ -236,16 +216,17 @@
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
                     if (obstacle.src === 'mobil6.png') {
-                        lives++;
+                        lives++; 
                     } else {
-                        lives--; 
-                        invincibleTime = 60; 
+                        lives--;  
+                        invincible = true;  
+                        setTimeout(() => { invincible = false; }, 1000);  
                     }
 
                     if (lives <= 0) {
-                        alert('Game Over! Skor Anda: ' + score);
                         gameRunning = false;
                         clearInterval(speedIncreaseInterval);
+                        alert('Game Over! Skor Anda: ' + score);
                     }
                     return;
                 }
