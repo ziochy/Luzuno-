@@ -68,10 +68,14 @@
         const bgImg = new Image();
         bgImg.src = 'background.png';
 
+        const heartImg = new Image();
+        heartImg.src = 'heart.png'; // Ikon hati untuk nyawa
+
         let gameRunning = false;
         let speedMultiplier = 1;
         let speedIncreaseInterval;
-        let score = 0; // Tambahkan variabel skor
+        let score = 0;
+        let lives = 3; // Menambahkan 3 kesempatan
 
         let dino = {
             x: 50, 
@@ -118,7 +122,8 @@
                 dino.y = dino.groundY;
                 dino.velocityY = 0;
                 obstacles = [];
-                score = 0; // Reset skor saat mulai
+                score = 0;
+                lives = 3; // Reset nyawa saat mulai
                 speedMultiplier = 1;
 
                 clearInterval(speedIncreaseInterval);
@@ -150,8 +155,9 @@
             checkCollision();
             drawDino();
             drawObstacles();
-            updateScore(); // Update skor setiap frame
-            drawScore(); // Tampilkan skor di layar
+            updateScore();
+            drawScore();
+            drawLives(); // Gambar nyawa di layar
             requestAnimationFrame(updateGame);
         }
 
@@ -209,24 +215,32 @@
                     dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
-                    alert('Game Over! Skor Anda: ' + score);
-                    gameRunning = false;
-                    clearInterval(speedIncreaseInterval);
-                    return;
+                    lives--; // Kurangi nyawa saat tabrakan
+                    if (lives <= 0) {
+                        alert('Game Over! Skor Anda: ' + score);
+                        gameRunning = false;
+                        clearInterval(speedIncreaseInterval);
+                    }
                 }
             }
         }
 
         function updateScore() {
             if (gameRunning) {
-                score += 1; // Tambahkan skor seiring waktu
+                score += 1;
             }
         }
 
         function drawScore() {
             ctx.font = '20px Arial';
             ctx.fillStyle = 'black';
-            ctx.fillText('Skor: ' + score, canvas.width - 120, 30); // Menampilkan skor di pojok kanan atas
+            ctx.fillText('Skor: ' + score, canvas.width - 120, 30);
+        }
+
+        function drawLives() {
+            for (let i = 0; i < lives; i++) {
+                ctx.drawImage(heartImg, 10 + i * 35, 10, 30, 30);
+            }
         }
     </script>
 </body>
