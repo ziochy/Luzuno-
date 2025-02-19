@@ -62,8 +62,8 @@
         const dinoImg = new Image();
         dinoImg.src = 'dino.png';
 
-        const cactusImg = new Image();
-        cactusImg.src = 'kaktus.png';
+        const carImg = new Image();
+        carImg.src = 'mobil.png';
 
         const bgImg = new Image();
         bgImg.src = 'background.png';
@@ -74,34 +74,28 @@
 
         let dino = {
             x: 50, 
-            y: 175, 
+            y: 190,  // Disesuaikan agar Dino benar-benar menyentuh tanah
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.8, 
+            gravity: 0.5,  
             jumpPower: -14, 
             isJumping: false 
         };
 
-        let cacti = [];
+        let obstacles = [];
 
-        function spawnCactus() {
-            let lastX = cacti.length > 0 ? cacti[cacti.length - 1].x : canvas.width;
+        function spawnObstacle() {
+            let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
             
-            let sizeType = Math.random() < 0.5 ? "small" : "medium";
-            let cactusHeight = sizeType === "small" ? 35 : 45; // Hanya kecil & sedang
-            let newCactus = {
+            let newObstacle = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: 175 + (dino.height - cactusHeight), // Sejajar dalam satu garis horizontal
-                width: sizeType === "small" ? 30 : 40,  
-                height: cactusHeight, 
-                hitboxX: 5, 
-                hitboxY: 5, 
-                hitboxWidth: sizeType === "small" ? 25 : 35, 
-                hitboxHeight: cactusHeight - 5, 
-                speed: 3 
+                y: 190, // Disesuaikan agar sejajar dengan Dino
+                width: 50,  
+                height: 30,  
+                speed: 3  
             };
-            cacti.push(newCactus);
+            obstacles.push(newObstacle);
         }
 
         document.getElementById('startButton').addEventListener('click', startGame);
@@ -119,16 +113,16 @@
         function startGame() {
             if (!gameRunning) {
                 gameRunning = true;
-                dino.y = 175;
+                dino.y = 190;
                 dino.velocityY = 0;
-                cacti = [];
+                obstacles = [];
                 speedMultiplier = 1;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
 
                 for (let i = 0; i < 3; i++) {
-                    spawnCactus();
+                    spawnObstacle();
                 }
 
                 updateGame();
@@ -149,10 +143,10 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
             moveDino();
-            moveCactus();
+            moveObstacles();
             checkCollision();
             drawDino();
-            drawCactus();
+            drawObstacles();
             requestAnimationFrame(updateGame);
         }
 
@@ -164,31 +158,31 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            if (dino.y > 175) { 
-                dino.y = 175;
+            if (dino.y > 190) { // Dino benar-benar menyentuh tanah
+                dino.y = 190;
                 dino.isJumping = false;
             }
         }
 
-        function drawCactus() {
-            cacti.forEach(cactus => {
-                ctx.drawImage(cactusImg, cactus.x, cactus.y, cactus.width, cactus.height);
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             });
         }
 
-        function moveCactus() {
-            for (let i = 0; i < cacti.length; i++) {
-                cacti[i].x -= cacti[i].speed * speedMultiplier;
+        function moveObstacles() {
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].x -= obstacles[i].speed * speedMultiplier;
             }
 
-            if (cacti.length > 0 && cacti[0].x < -cacti[0].width) {
-                cacti.shift();
-                spawnCactus();
+            if (obstacles.length > 0 && obstacles[0].x < -obstacles[0].width) {
+                obstacles.shift();
+                spawnObstacle();
             }
         }
 
         function checkCollision() {
-            for (let cactus of cacti) {
+            for (let obstacle of obstacles) {
                 let dinoHitbox = {
                     x: dino.x + 10,
                     y: dino.y + 10,
@@ -196,18 +190,18 @@
                     height: 50
                 };
 
-                let cactusHitbox = {
-                    x: cactus.x + cactus.hitboxX,
-                    y: cactus.y + cactus.hitboxY,
-                    width: cactus.hitboxWidth,
-                    height: cactus.hitboxHeight
+                let obstacleHitbox = {
+                    x: obstacle.x,
+                    y: obstacle.y,
+                    width: obstacle.width,
+                    height: obstacle.height
                 };
 
                 if (
-                    dinoHitbox.x < cactusHitbox.x + cactusHitbox.width &&
-                    dinoHitbox.x + dinoHitbox.width > cactusHitbox.x &&
-                    dinoHitbox.y < cactusHitbox.y + cactusHitbox.height &&
-                    dinoHitbox.y + dinoHitbox.height > cactusHitbox.y
+                    dinoHitbox.x < obstacleHitbox.x + obstacleHitbox.width &&
+                    dinoHitbox.x + dinoHitbox.width > obstacleHitbox.x &&
+                    dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
+                    dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
                     alert('Game Over!');
                     gameRunning = false;
