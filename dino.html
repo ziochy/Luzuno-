@@ -50,7 +50,7 @@
             { src: 'mobil3.png', chance: 30 },
             { src: 'mobil4.png', chance: 15 },
             { src: 'mobil5.png', chance: 10 },
-            { src: 'mobil6.png', chance: 4 } 
+            { src: 'mobil6.png', chance: 4 }
         ];
 
         const bgImg = new Image();
@@ -80,6 +80,7 @@
 
         let obstacles = [];
 
+        // Fungsi untuk memilih mobil secara acak berdasarkan peluang
         function chooseCarImage() {
             let random = Math.random() * 100;
             let cumulativeChance = 0;
@@ -95,6 +96,7 @@
             return { img: new Image(), src: 'mobil.png' }; 
         }
 
+        // Fungsi untuk spawn mobil baru
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
             let car = chooseCarImage();
@@ -130,7 +132,7 @@
                 dino.velocityY = 0;
                 obstacles = [];
                 score = 0;
-                lives = 3; 
+                lives = 3;
                 speedMultiplier = 1;
                 invincible = false;
 
@@ -231,6 +233,10 @@
                     return;
                 }
             }
+        }
+
+        function updateScore() {
+            score++;
         }
 
         function drawScore() {
