@@ -91,7 +91,7 @@
             let sizeType = Math.random() < 0.5 ? "small" : "medium";
             let newCactus = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: 185, 
+                y: 195 - (sizeType === "small" ? 40 : 55),  
                 width: sizeType === "small" ? 30 : 45,  
                 height: sizeType === "small" ? 40 : 55, 
                 hitboxX: 5, 
