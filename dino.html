@@ -30,7 +30,7 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="200"></canvas>
+    <canvas id="gameCanvas" width="800" height="250"></canvas> <!-- Background lebih tinggi -->
     <div class="controls">
         <button id="startButton">Mulai</button>
         <button id="jumpButton">Loncat</button>
@@ -52,23 +52,23 @@
 
         let gameRunning = false;
 
-        // Dino (Hitbox lebih kecil agar lebih adil)
+        // Dino lebih besar
         let dino = {
             x: 50, 
-            y: 150, 
-            width: 50, 
-            height: 50, 
+            y: 175, 
+            width: 60, 
+            height: 60, 
             hitboxX: 10, 
             hitboxY: 10, 
-            hitboxWidth: 30, 
-            hitboxHeight: 40, 
+            hitboxWidth: 40, 
+            hitboxHeight: 50, 
             velocityY: 0, 
             gravity: 0.8, 
-            jumpPower: -12, 
+            jumpPower: -14, 
             isJumping: false 
         };
 
-        // Kumpulan Kaktus
+        // Kumpulan Kaktus lebih besar
         let cacti = [];
 
         function spawnCactus() {
@@ -76,13 +76,13 @@
 
             let newCactus = {
                 x: lastX + Math.random() * 200 + 150, // Jarak acak tapi aman
-                y: 160, 
-                width: 30, 
-                height: 40, 
+                y: 185, 
+                width: 40, 
+                height: 50, 
                 hitboxX: 5, 
                 hitboxY: 5, 
-                hitboxWidth: 20, 
-                hitboxHeight: 35, 
+                hitboxWidth: 30, 
+                hitboxHeight: 45, 
                 speed: 3 
             };
 
@@ -105,7 +105,7 @@
         function startGame() {
             if (!gameRunning) {
                 gameRunning = true;
-                dino.y = 150;
+                dino.y = 175;
                 dino.velocityY = 0;
                 cacti = [];
                 
@@ -122,7 +122,7 @@
             if (!gameRunning) return;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); // Gambar background
+            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); // Background lebih tinggi
             moveDino();
             moveCactus();
             checkCollision();
@@ -139,8 +139,8 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            if (dino.y > 150) { 
-                dino.y = 150;
+            if (dino.y > 175) { 
+                dino.y = 175;
                 dino.isJumping = false;
             }
         }
