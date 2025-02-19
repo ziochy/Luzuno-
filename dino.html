@@ -63,14 +63,8 @@
         dinoImg.src = 'dino.png';
 
         const carImgs = [
-            'mobil.png',
-            'mobil1.png',
-            'mobil2.png',
-            'mobil3.png',
-            'mobil4.png',
-            'mobil5.gif',
-            'mobil6.png' // Mobil yang bisa menambah nyawa
-        ];
+            'mobil.png', 'mobil1.png', 'mobil2.png', 'mobil3.png', 'mobil4.png', 'mobil5.gif', 'mobil6.png'
+        ]; 
 
         const bgImg = new Image();
         bgImg.src = 'background.png';
@@ -82,8 +76,8 @@
         let speedMultiplier = 1;
         let speedIncreaseInterval;
         let score = 0;
-        let lives = 3; // Nyawa awal
-        let invincibleTime = 0; // Waktu invincibility setelah tabrakan
+        let lives = 3;
+        let invincibleTime = 0;
 
         let dino = {
             x: 50, 
@@ -101,35 +95,17 @@
 
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
-
-            // Tentukan jenis mobil yang muncul secara acak dengan peluang yang diberikan
-            let randomNum = Math.random() * 100;
-            let carImgIndex;
-
-            if (randomNum < 15) carImgIndex = 0; // mobil.png (15%)
-            else if (randomNum < 30) carImgIndex = 1; // mobil1.png (15%)
-            else if (randomNum < 45) carImgIndex = 2; // mobil2.png (15%)
-            else if (randomNum < 60) carImgIndex = 3; // mobil3.png (15%)
-            else if (randomNum < 75) carImgIndex = 4; // mobil4.png (15%)
-            else if (randomNum < 85) carImgIndex = 5; // mobil5.gif (15%)
-            else carImgIndex = 6; // mobil6.png (10%)
-
+            
+            let randomCar = carImgs[Math.floor(Math.random() * carImgs.length)];
             let newObstacle = {
                 x: lastX + Math.random() * 300 + 200, 
                 y: dino.groundY + 30,  
                 width: 50,  
                 height: 30,  
-                speed: 5,
-                img: carImgs[carImgIndex], // Pilih mobil berdasarkan index
-                passed: false // Cek apakah mobil sudah dilewati
+                speed: 5,  
+                carImg: randomCar
             };
-
             obstacles.push(newObstacle);
-
-            // Jika mobil6 muncul, set mobil tersebut agar bisa menambah nyawa
-            if (newObstacle.img === 'mobil6.png') {
-                newObstacle.passed = false; // Mobil6 belum dilewati
-            }
         }
 
         document.getElementById('startButton').addEventListener('click', startGame);
@@ -151,9 +127,9 @@
                 dino.velocityY = 0;
                 obstacles = [];
                 score = 0;
-                lives = 3; // Reset nyawa
+                lives = 3; 
                 speedMultiplier = 1;
-                invincibleTime = 0; // Reset waktu invincible
+                invincibleTime = 0;
 
                 clearInterval(speedIncreaseInterval);
                 speedIncreaseInterval = setInterval(increaseSpeed, 5000);
@@ -188,7 +164,7 @@
             drawScore();
             drawLives();
 
-            invincibleTime--; 
+            invincibleTime--;
             requestAnimationFrame(updateGame);
         }
 
@@ -210,7 +186,7 @@
         function drawObstacles() {
             obstacles.forEach(obstacle => {
                 let carImg = new Image();
-                carImg.src = obstacle.img; // Ambil gambar mobil yang sesuai
+                carImg.src = obstacle.carImg;
                 ctx.drawImage(carImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             });
         }
@@ -227,7 +203,7 @@
         }
 
         function checkCollision() {
-            if (invincibleTime > 0) return; // Tidak bisa kena tabrakan jika dalam invincible
+            if (invincibleTime > 0) return; 
 
             for (let obstacle of obstacles) {
                 let dinoHitbox = {
@@ -250,23 +226,24 @@
                     dinoHitbox.y < obstacleHitbox.y + obstacleHitbox.height &&
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
-                    if (obstacle.img !== 'mobil6.png') {
-                        lives--; // Kurangi nyawa jika menabrak mobil selain mobil6
-                        invincibleTime = 60; // Tambahkan waktu invincible
+                    if (obstacle.carImg === 'mobil6.png') {
+                        if (lives < 3) {
+                            lives++; // Menambah nyawa jika mobil6.png
+                        }
+                    } else {
+                        lives--; 
+                    }
+
+                    invincibleTime = 60; 
+
+                    if (lives <= 0) {
+                        alert('Game Over! Skor Anda: ' + score);
+                        gameRunning = false;
+                        clearInterval(speedIncreaseInterval);
                     }
                     return;
                 }
             }
-
-            // Tambah nyawa jika mobil6 sudah dilewati
-            obstacles.forEach(obstacle => {
-                if (obstacle.img === 'mobil6.png' && !obstacle.passed) {
-                    if (obstacle.x + obstacle.width < dino.x) {
-                        lives++; // Tambah nyawa
-                        obstacle.passed = true; // Tandai mobil sudah dilewati
-                    }
-                }
-            });
         }
 
         function updateScore() {
