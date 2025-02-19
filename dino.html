@@ -68,18 +68,26 @@
             isJumping: false 
         };
 
-        // Kaktus
-        let cactus = { 
-            x: canvas.width, 
-            y: 160, 
-            width: 30, 
-            height: 40, 
-            hitboxX: 5, 
-            hitboxY: 5, 
-            hitboxWidth: 20, 
-            hitboxHeight: 35, 
-            speed: 3 
-        };
+        // Kumpulan Kaktus
+        let cacti = [];
+
+        function spawnCactus() {
+            let lastX = cacti.length > 0 ? cacti[cacti.length - 1].x : canvas.width;
+
+            let newCactus = {
+                x: lastX + Math.random() * 200 + 150, // Jarak acak tapi aman
+                y: 160, 
+                width: 30, 
+                height: 40, 
+                hitboxX: 5, 
+                hitboxY: 5, 
+                hitboxWidth: 20, 
+                hitboxHeight: 35, 
+                speed: 3 
+            };
+
+            cacti.push(newCactus);
+        }
 
         // Event Listener untuk tombol
         document.getElementById('startButton').addEventListener('click', startGame);
@@ -99,7 +107,13 @@
                 gameRunning = true;
                 dino.y = 150;
                 dino.velocityY = 0;
-                cactus.x = canvas.width;
+                cacti = [];
+                
+                // Spawn beberapa kaktus awal
+                for (let i = 0; i < 3; i++) {
+                    spawnCactus();
+                }
+
                 updateGame();
             }
         }
@@ -132,39 +146,49 @@
         }
 
         function drawCactus() {
-            ctx.drawImage(cactusImg, cactus.x, cactus.y, cactus.width, cactus.height);
+            cacti.forEach(cactus => {
+                ctx.drawImage(cactusImg, cactus.x, cactus.y, cactus.width, cactus.height);
+            });
         }
 
         function moveCactus() {
-            cactus.x -= cactus.speed;
-            if (cactus.x < -cactus.width) {
-                cactus.x = canvas.width + Math.random() * 200; // Kaktus muncul lagi secara acak
+            for (let i = 0; i < cacti.length; i++) {
+                cacti[i].x -= cacti[i].speed;
+            }
+
+            // Hapus kaktus yang keluar layar dan spawn yang baru
+            if (cacti.length > 0 && cacti[0].x < -cacti[0].width) {
+                cacti.shift();
+                spawnCactus();
             }
         }
 
         function checkCollision() {
-            let dinoHitbox = {
-                x: dino.x + dino.hitboxX,
-                y: dino.y + dino.hitboxY,
-                width: dino.hitboxWidth,
-                height: dino.hitboxHeight
-            };
+            for (let cactus of cacti) {
+                let dinoHitbox = {
+                    x: dino.x + dino.hitboxX,
+                    y: dino.y + dino.hitboxY,
+                    width: dino.hitboxWidth,
+                    height: dino.hitboxHeight
+                };
 
-            let cactusHitbox = {
-                x: cactus.x + cactus.hitboxX,
-                y: cactus.y + cactus.hitboxY,
-                width: cactus.hitboxWidth,
-                height: cactus.hitboxHeight
-            };
+                let cactusHitbox = {
+                    x: cactus.x + cactus.hitboxX,
+                    y: cactus.y + cactus.hitboxY,
+                    width: cactus.hitboxWidth,
+                    height: cactus.hitboxHeight
+                };
 
-            if (
-                dinoHitbox.x < cactusHitbox.x + cactusHitbox.width &&
-                dinoHitbox.x + dinoHitbox.width > cactusHitbox.x &&
-                dinoHitbox.y < cactusHitbox.y + cactusHitbox.height &&
-                dinoHitbox.y + dinoHitbox.height > cactusHitbox.y
-            ) {
-                alert('Game Over!');
-                gameRunning = false;
+                if (
+                    dinoHitbox.x < cactusHitbox.x + cactusHitbox.width &&
+                    dinoHitbox.x + dinoHitbox.width > cactusHitbox.x &&
+                    dinoHitbox.y < cactusHitbox.y + cactusHitbox.height &&
+                    dinoHitbox.y + dinoHitbox.height > cactusHitbox.y
+                ) {
+                    alert('Game Over!');
+                    gameRunning = false;
+                    return;
+                }
             }
         }
     </script>
