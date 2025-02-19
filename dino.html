@@ -78,11 +78,11 @@
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 1.1,  
+            gravity: 0.5,  
             jumpPower: -10,  
             isJumping: false,
             groundY: 150,  // Posisi tanah
-            maxJumpHeight: 85  // Ketinggian maksimal lompatan
+            maxJumpHeight: 75  // Ketinggian maksimal lompatan
         };
 
         let obstacles = [];
@@ -91,12 +91,12 @@
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
             
             let newObstacle = {
-                x: 50 + Math.random() * 200 + 150, 
-                y: 150, // Sejajar dengan Dino
+                x: lastX + Math.random() * 200 + 150, 
+                y: dino.groundY,  // Posisi mobil disamakan dengan posisi tanah Dino
                 width: 50,  
                 height: 30,  
-                speed: 4  
-           };
+                speed: 3  
+            };
             obstacles.push(newObstacle);
         }
 
