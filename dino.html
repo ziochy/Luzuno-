@@ -79,7 +79,7 @@
             height: 60, 
             velocityY: 0, 
             gravity: 0.5,  
-            jumpPower: -10,  
+            jumpPower: -14,  
             isJumping: false,
             groundY: 150,  // Posisi tanah
             maxJumpHeight: 80  // Ketinggian maksimal lompatan
@@ -92,7 +92,7 @@
             
             let newObstacle = {
                 x: lastX + Math.random() * 200 + 150, 
-                y: dino.groundY + 20,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
+                y: dino.groundY + 30,  // Menurunkan mobil sedikit (20px lebih rendah dari tanah)
                 width: 50,  
                 height: 30,  
                 speed: 3  
