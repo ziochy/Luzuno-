@@ -218,7 +218,7 @@
                     dinoHitbox.y + dinoHitbox.height > obstacleHitbox.y
                 ) {
                     if (obstacle.src === 'mobil6.png') {
-                        lives++;  // Tambah nyawa 1 meskipun sudah penuh
+                        lives = Math.min(lives + 1, 3);  // Tambah nyawa 1 meskipun sudah penuh
                     } else {
                         lives--;  
                         invincible = true;  
@@ -252,4 +252,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
