@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,10 +30,10 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="250"></canvas> <!-- Background lebih tinggi -->
+    <canvas id="gameCanvas" width="700" height="250"></canvas> <!-- Lebar background dikurangi -->
     <div class="controls">
         <button id="startButton">Mulai</button>
-        <button id="jumpButton">Loncat</button>
+        <button id="jumpButton">Lompat</button> <!-- Tombol diperbaiki -->
     </div>
 
     <script>
@@ -51,6 +51,8 @@
         bgImg.src = 'background.png';
 
         let gameRunning = false;
+        let speedMultiplier = 1; // Mulai dengan kecepatan normal
+        let speedIncreaseInterval;
 
         // Dino lebih besar
         let dino = {
@@ -108,7 +110,12 @@
                 dino.y = 175;
                 dino.velocityY = 0;
                 cacti = [];
-                
+                speedMultiplier = 1;
+
+                // Reset kecepatan bertambah setiap 5 detik
+                clearInterval(speedIncreaseInterval);
+                speedIncreaseInterval = setInterval(increaseSpeed, 5000);
+
                 // Spawn beberapa kaktus awal
                 for (let i = 0; i < 3; i++) {
                     spawnCactus();
@@ -118,11 +125,19 @@
             }
         }
 
+        function increaseSpeed() {
+            if (speedMultiplier < 1.2) { // Maksimal 20% lebih cepat
+                speedMultiplier += 0.02;
+            } else {
+                clearInterval(speedIncreaseInterval); // Stop jika sudah mencapai batas
+            }
+        }
+
         function updateGame() {
             if (!gameRunning) return;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); // Background lebih tinggi
+            ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); // Background lebih kecil
             moveDino();
             moveCactus();
             checkCollision();
@@ -153,7 +168,7 @@
 
         function moveCactus() {
             for (let i = 0; i < cacti.length; i++) {
-                cacti[i].x -= cacti[i].speed;
+                cacti[i].x -= cacti[i].speed * speedMultiplier;
             }
 
             // Hapus kaktus yang keluar layar dan spawn yang baru
@@ -187,6 +202,7 @@
                 ) {
                     alert('Game Over!');
                     gameRunning = false;
+                    clearInterval(speedIncreaseInterval);
                     return;
                 }
             }
