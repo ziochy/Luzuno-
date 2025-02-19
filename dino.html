@@ -78,11 +78,10 @@
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.5,  
-            jumpPower: -14,  
+            gravity: 0.2,  // Gravitasi untuk membuat jatuh lebih alami
+            jumpPower: -12,  // Kekuatan lompat yang moderat
             isJumping: false,
             groundY: 150,  // Posisi tanah
-            maxJumpHeight: 80  // Ketinggian maksimal lompatan
         };
 
         let obstacles = [];
@@ -160,14 +159,11 @@
             dino.y += dino.velocityY;
             dino.velocityY += dino.gravity;
 
-            if (dino.y < dino.groundY - dino.maxJumpHeight) { // Batasi lompatan agar tidak mentok atap
-                dino.y = dino.groundY - dino.maxJumpHeight;
-                dino.velocityY = 0;
-            }
-
-            if (dino.y > dino.groundY) { // Pastikan Dino turun kembali ke tanah
+            // Pastikan Dino tetap berada di tanah setelah melompat
+            if (dino.y > dino.groundY) { 
                 dino.y = dino.groundY;
                 dino.isJumping = false;
+                dino.velocityY = 0;
             }
         }
 
@@ -219,4 +215,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
