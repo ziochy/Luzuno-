@@ -126,25 +126,24 @@
         }
 
         function startGame() {
-            if (!gameRunning) {
-                gameRunning = true;
-                dino.y = dino.groundY;
-                dino.velocityY = 0;
-                obstacles = [];
-                score = 0;
-                lives = 3;
-                speedMultiplier = 1;
-                invincible = false;
+            if (gameRunning) return;  // Cek jika game sudah dimulai
+            gameRunning = true;
+            dino.y = dino.groundY;
+            dino.velocityY = 0;
+            obstacles = [];
+            score = 0;
+            lives = 3;
+            speedMultiplier = 1;
+            invincible = false;
 
-                clearInterval(speedIncreaseInterval);
-                speedIncreaseInterval = setInterval(increaseSpeed, 5000);
+            clearInterval(speedIncreaseInterval);
+            speedIncreaseInterval = setInterval(increaseSpeed, 5000);
 
-                for (let i = 0; i < 3; i++) {
-                    spawnObstacle();
-                }
-
-                updateGame();
+            for (let i = 0; i < 3; i++) {
+                spawnObstacle();
             }
+
+            updateGame();
         }
 
         function increaseSpeed() {
@@ -156,10 +155,7 @@
         }
 
         function updateGame() {
-            if (!gameRunning) {
-                console.log("Game stopped.");
-                return;
-            }
+            if (!gameRunning) return;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
@@ -253,6 +249,7 @@
                 ctx.drawImage(heartImg, 10 + i * 35, 10, 30, 30);
             }
         }
+
     </script>
 </body>
 </html>
