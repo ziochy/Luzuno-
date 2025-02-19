@@ -49,7 +49,7 @@
             { src: 'mobil2.png', chance: 15 },
             { src: 'mobil3.png', chance: 15 },
             { src: 'mobil4.png', chance: 15 },
-            { src: 'mobil5.gif', chance: 15 },  // Ganti mobil5.png menjadi mobil5.gif
+            { src: 'mobil5.gif', chance: 15 },
             { src: 'mobil6.png', chance: 10 }
         ];
 
@@ -80,7 +80,6 @@
 
         let obstacles = [];
 
-        // Fungsi untuk memilih mobil secara acak berdasarkan peluang
         function chooseCarImage() {
             let random = Math.random() * 100;
             let cumulativeChance = 0;
@@ -96,7 +95,6 @@
             return { img: new Image(), src: 'mobil.png' }; 
         }
 
-        // Fungsi untuk spawn mobil baru
         function spawnObstacle() {
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
             let car = chooseCarImage();
@@ -252,4 +250,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
