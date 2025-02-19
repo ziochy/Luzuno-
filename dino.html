@@ -78,11 +78,11 @@
             width: 60, 
             height: 60, 
             velocityY: 0, 
-            gravity: 0.9,  
+            gravity: 1.1,  
             jumpPower: -10,  
             isJumping: false,
             groundY: 150,  // Posisi tanah
-            maxJumpHeight: 80  // Ketinggian maksimal lompatan
+            maxJumpHeight: 85  // Ketinggian maksimal lompatan
         };
 
         let obstacles = [];
@@ -91,8 +91,8 @@
             let lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : canvas.width;
             
             let newObstacle = {
-                x: lastX + Math.random() * 200 + 150, 
-                y: 60, // Sejajar dengan Dino
+                x: 50 + Math.random() * 200 + 150, 
+                y: 150, // Sejajar dengan Dino
                 width: 50,  
                 height: 30,  
                 speed: 4  
