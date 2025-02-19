@@ -8,8 +8,9 @@
         body {
             margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             background-color: #f0f0f0;
         }
@@ -17,10 +18,24 @@
             background-color: #fff;
             border: 2px solid black;
         }
+        .controls {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="200"></canvas>
+    <div class="controls">
+        <button id="startButton">Mulai</button>
+        <button id="jumpButton">Loncat</button>
+    </div>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -35,20 +50,40 @@
         const bgImg = new Image();
         bgImg.src = 'background.png';
 
+        let gameRunning = false;
+
         // Dino
         let dino = { x: 50, y: 150, width: 40, height: 40, velocityY: 0, gravity: 0.8, jumpPower: -12, isJumping: false };
 
         // Kaktus
         let cactus = { x: canvas.width, y: 160, width: 30, height: 40, speed: 3 };
 
-        document.addEventListener('keydown', (event) => {
-            if (event.code === 'Space' && !dino.isJumping) {
+        // Event Listener untuk tombol
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.getElementById('jumpButton').addEventListener('click', jump);
+        document.addEventListener('keydown', (event) => { if (event.code === 'Space') jump(); });
+
+        function jump() {
+            if (!gameRunning) return;
+            if (!dino.isJumping) {
                 dino.isJumping = true;
                 dino.velocityY = dino.jumpPower;
             }
-        });
+        }
+
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                dino.y = 150;
+                dino.velocityY = 0;
+                cactus.x = canvas.width;
+                updateGame();
+            }
+        }
 
         function updateGame() {
+            if (!gameRunning) return;
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); // Gambar background
             moveDino();
@@ -89,11 +124,9 @@
                 dino.x + dino.width > cactus.x &&
                 dino.y + dino.height > cactus.y) {
                 alert('Game Over!');
-                document.location.reload();
+                gameRunning = false;
             }
         }
-
-        updateGame();
     </script>
 </body>
 </html>
