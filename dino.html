@@ -52,11 +52,34 @@
 
         let gameRunning = false;
 
-        // Dino
-        let dino = { x: 50, y: 150, width: 40, height: 40, velocityY: 0, gravity: 0.8, jumpPower: -12, isJumping: false };
+        // Dino (Hitbox lebih kecil agar lebih adil)
+        let dino = {
+            x: 50, 
+            y: 150, 
+            width: 50, 
+            height: 50, 
+            hitboxX: 10, 
+            hitboxY: 10, 
+            hitboxWidth: 30, 
+            hitboxHeight: 40, 
+            velocityY: 0, 
+            gravity: 0.8, 
+            jumpPower: -12, 
+            isJumping: false 
+        };
 
         // Kaktus
-        let cactus = { x: canvas.width, y: 160, width: 30, height: 40, speed: 3 };
+        let cactus = { 
+            x: canvas.width, 
+            y: 160, 
+            width: 30, 
+            height: 40, 
+            hitboxX: 5, 
+            hitboxY: 5, 
+            hitboxWidth: 20, 
+            hitboxHeight: 35, 
+            speed: 3 
+        };
 
         // Event Listener untuk tombol
         document.getElementById('startButton').addEventListener('click', startGame);
@@ -120,9 +143,26 @@
         }
 
         function checkCollision() {
-            if (dino.x < cactus.x + cactus.width &&
-                dino.x + dino.width > cactus.x &&
-                dino.y + dino.height > cactus.y) {
+            let dinoHitbox = {
+                x: dino.x + dino.hitboxX,
+                y: dino.y + dino.hitboxY,
+                width: dino.hitboxWidth,
+                height: dino.hitboxHeight
+            };
+
+            let cactusHitbox = {
+                x: cactus.x + cactus.hitboxX,
+                y: cactus.y + cactus.hitboxY,
+                width: cactus.hitboxWidth,
+                height: cactus.hitboxHeight
+            };
+
+            if (
+                dinoHitbox.x < cactusHitbox.x + cactusHitbox.width &&
+                dinoHitbox.x + dinoHitbox.width > cactusHitbox.x &&
+                dinoHitbox.y < cactusHitbox.y + cactusHitbox.height &&
+                dinoHitbox.y + dinoHitbox.height > cactusHitbox.y
+            ) {
                 alert('Game Over!');
                 gameRunning = false;
             }
