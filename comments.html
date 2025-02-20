@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komentar Luzuno</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .comment-box { background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px; background: blue; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        button:hover { background: darkblue; }
+    </style>
+</head>
+<body>
+    <h1>Komentar Pengguna</h1>
+    <input type="text" id="username" placeholder="Nama Anda">
+    <textarea id="comment" placeholder="Tulis komentar..." rows="4"></textarea>
+    <button onclick="postComment()">Kirim Komentar</button>
+
+    <h2>Daftar Komentar</h2>
+    <div id="commentsContainer"></div>
+
+    <script>
+        async function loadComments() {
+            let response = await fetch("http://localhost:5000/comments");
+            let comments = await response.json();
+            let commentsContainer = document.getElementById("commentsContainer");
+            commentsContainer.innerHTML = "";
+
+            comments.forEach(comment => {
+                let commentDiv = document.createElement("div");
+                commentDiv.classList.add("comment-box");
+                commentDiv.innerHTML = `
+                    <strong>${comment.name}</strong> - <small>${new Date(comment.timestamp).toLocaleString()}</small>
+                    <p>${comment.comment}</p>
+                    <button onclick="deleteComment('${comment._id}')">Hapus</button>
+                    <hr>
+                `;
+                commentsContainer.appendChild(commentDiv);
+            });
+        }
+
+        async function postComment() {
+            let name = document.getElementById("username").value.trim();
+            let comment = document.getElementById("comment").value.trim();
+
+            if (!comment) {
+                alert("Komentar tidak boleh kosong!");
+                return;
+            }
+
+            await fetch("http://localhost:5000/comments", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, comment })
+            });
+
+            document.getElementById("username").value = "";
+            document.getElementById("comment").value = "";
+            loadComments();
+        }
+
+        async function deleteComment(id) {
+            await fetch(`http://localhost:5000/comments/${id}`, { method: "DELETE" });
+            loadComments();
+        }
+
+        loadComments();
+    </script>
+</body>
+</html>
