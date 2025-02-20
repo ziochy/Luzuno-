@@ -6,41 +6,26 @@
     <title>Luzuno - Beranda</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="assets/js/login.js" defer></script> <!-- Link ke file JS jika diperlukan -->
-</head>
-<body>
-    <header>
-      !-- Tambahkan Link ke Halaman Dino -->
-                <a href="dino.html" class="btn-dino">Mainkan Game Dino</a>
-            </div>
-        </div>
-    </header>
-</body>
-</html>
-        <div class="header-content">
-            <h1>Selamat Datang di Luzuno</h1>
-            <p>Belajar Bahasa Jepang Mudah dan Menyenangkan!</p>
-            <div class="auth-buttons">
-                <a href="login.html" class="btn-login">Login</a>
-                <a href="register.html" class="btn-register">Daftar</a>
-            </div>
-        </div>
-    </header>
-</body>
-</html>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
 
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luzuno - Beranda</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            loadComments();
-        });
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHWbdadwqqEkHa9yMqBLWhWv4xcwTbBLs",
+            authDomain: "luzuno-cc9bb.firebaseapp.com",
+            projectId: "luzuno-cc9bb",
+            storageBucket: "luzuno-cc9bb.firebasestorage.app",
+            messagingSenderId: "207252700714",
+            appId: "1:207252700714:web:a334ed22ca156208524d53"
+        };
 
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Post comment function
         function postComment() {
             let name = document.getElementById("username").value.trim();
             let comment = document.getElementById("comment").value.trim();
@@ -50,56 +35,46 @@
                 return;
             }
 
-            let commentData = {
+            // Push data to Firebase
+            const commentsRef = ref(database, 'comments');
+            const newCommentRef = push(commentsRef);
+            set(newCommentRef, {
                 name: name,
                 comment: comment,
-                timestamp: new Date().toLocaleString(),
-                timeSaved: new Date().getTime() // Simpan waktu dalam milidetik
-            };
+                timestamp: new Date().toLocaleString()
+            });
 
-            let comments = JSON.parse(localStorage.getItem("comments")) || [];
-            comments.push(commentData);
-            localStorage.setItem("comments", JSON.stringify(comments));
-
+            // Clear input fields
             document.getElementById("username").value = "";
             document.getElementById("comment").value = "";
-
-            loadComments();
         }
 
+        // Load comments function
         function loadComments() {
-            let comments = JSON.parse(localStorage.getItem("comments")) || [];
-            let commentsContainer = document.getElementById("commentsContainer");
-            commentsContainer.innerHTML = "";
+            const commentsRef = ref(database, 'comments');
+            onValue(commentsRef, (snapshot) => {
+                const commentsContainer = document.getElementById("commentsContainer");
+                commentsContainer.innerHTML = ""; // Clear existing comments
 
-            comments.forEach((commentData, index) => {
-                let commentDiv = document.createElement("div");
-                commentDiv.classList.add("comment-box");
+                snapshot.forEach((childSnapshot) => {
+                    const commentData = childSnapshot.val();
+                    const commentDiv = document.createElement("div");
+                    commentDiv.classList.add("comment-box");
 
-                let currentTime = new Date().getTime();
-                let commentTime = commentData.timeSaved;
-                let timeDifference = (currentTime - commentTime) / 60000; // dalam menit
-
-                let deleteButton = timeDifference < 5 
-                    ? `<button onclick="deleteComment(${index})">Hapus</button>` 
-                    : `<small>(Komentar tidak bisa dihapus setelah 5 menit)</small>`;
-
-                commentDiv.innerHTML = `
-                    <strong>${commentData.name}</strong> - <small>${commentData.timestamp}</small>
-                    <p>${commentData.comment}</p>
-                    ${deleteButton}
-                    <hr>
-                `;
-                commentsContainer.appendChild(commentDiv);
+                    commentDiv.innerHTML = `
+                        <strong>${commentData.name}</strong> - <small>${commentData.timestamp}</small>
+                        <p>${commentData.comment}</p>
+                        <hr>
+                    `;
+                    commentsContainer.appendChild(commentDiv);
+                });
             });
         }
 
-        function deleteComment(index) {
-            let comments = JSON.parse(localStorage.getItem("comments")) || [];
-            comments.splice(index, 1);
-            localStorage.setItem("comments", JSON.stringify(comments));
+        // Load comments on page load
+        document.addEventListener("DOMContentLoaded", function() {
             loadComments();
-        }
+        });
     </script>
     <style>
         .comment-section {
@@ -155,42 +130,7 @@
             </ul>
         </nav>
     </header>
-
     <main>
-        <section class="intro">
-            <h2>Apa yang Ingin Kamu Pelajari?</h2>
-            <p>Website ini menyediakan materi lengkap untuk belajar bahasa Jepang dari dasar hingga tingkat menengah. Mulailah perjalanan belajarmu sekarang!</p>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-                <i class="fas fa-pen"></i>
-                <h3>Renshuu</h3>
-                <p>Latihan soal hiragana & kanji N5-N4 untuk meningkatkan pemahamanmu.</p>
-                <a href="renshuu.html">Mulai Latihan</a>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-book"></i>
-                <h3>Hiragana & Katakana</h3>
-                <p>Pelajari dasar-dasar penulisan bahasa Jepang dengan Hiragana dan Katakana.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-graduation-cap"></i>
-                <h3>JLPT N5 & N4</h3>
-                <p>Persiapkan diri untuk ujian JLPT dengan materi yang terstruktur.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-cogs"></i>
-                <h3>Partikel</h3>
-                <p>Pelajari berbagai partikel penting dalam bahasa Jepang.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-bookmark"></i>
-                <h3>Kamus</h3>
-                <p>Akses kamus bahasa Jepang yang lengkap.</p>
-            </div>
-        </section>
-
         <section class="comment-section">
             <h2>Bagikan Pendapatmu!</h2>
             <input type="text" id="username" placeholder="Nama Anda">
@@ -206,4 +146,4 @@
         <p>&copy; 2025 Luzuno. Semua Hak Dilindungi.</p>
     </footer>
 </body>
-    </html>
+</html>
