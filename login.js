@@ -18,3 +18,42 @@ function isValidLogin(username, password) {
     // Gantilah logika validasi sesuai kebutuhan, misalnya dengan memeriksa username dan password
     return username === "admin" && password === "admin"; // Contoh validasi sederhana
 }
+  document.addEventListener("DOMContentLoaded", function() {
+    loadComments();
+    let storedUser = localStorage.getItem("loggedInUser"); // Ambil user yang login
+    if (storedUser) {
+        document.getElementById("username").value = storedUser;
+        document.getElementById("username").disabled = true; // Kunci input nama jika login
+    }
+});
+
+function postComment() {
+    let name = document.getElementById("username").value.trim();
+    let comment = document.getElementById("comment").value.trim();
+
+    if (comment === "") {
+        alert("Komentar tidak boleh kosong!");
+        return;
+    }
+
+    let commentData = {
+        name: name || "Anonim", // Jika tidak ada nama, pakai "Anonim"
+        comment: comment,
+        timestamp: new Date().toLocaleString(),
+        timeSaved: new Date().getTime()
+    };
+
+    let comments = JSON.parse(localStorage.getItem("comments")) || [];
+    comments.push(commentData);
+    localStorage.setItem("comments", JSON.stringify(comments));
+
+    document.getElementById("comment").value = "";
+    loadComments();
+}
+
+// Simpan nama saat login (contoh implementasi login)
+function login(username) {
+    localStorage.setItem("loggedInUser", username);
+    document.getElementById("username").value = username;
+    document.getElementById("username").disabled = true;
+}
