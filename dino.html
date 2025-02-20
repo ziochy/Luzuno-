@@ -267,3 +267,138 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.2/dist/umd/supabase.min.js"></script>
   </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #leaderboard {
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .scoreboard-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .scoreboard-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Game Leaderboard</h1>
+    
+    <!-- Button to simulate game over and save score -->
+    <button class="scoreboard-button" onclick="gameOver(100)">Simulate Game Over</button>
+
+    <!-- Leaderboard table -->
+    <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <table id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.7.1/dist/supabase.min.js"></script>
+    <script>
+        // Supabase initialization
+        const supabaseUrl = 'https://gveyvkodowhyyobprium.supabase.co';  // Replace with your Supabase URL
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2ZXl2a29kb3doeXlvYnByaXVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwMzAzNjksImV4cCI6MjA1NTYwNjM2OX0.UCXeO3okdbHEQhNdzg8C1BYCxW6aAWXO5aLXmQT2GQw';  // Replace with your Supabase key
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Save score to Supabase
+        async function saveScore(username, score) {
+            const { data, error } = await supabase
+                .from('leaderboard')
+                .insert([
+                    { username: username, score: score }
+                ]);
+
+            if (error) {
+                console.error('Error saving score:', error);
+            } else {
+                console.log('Score saved:', data);
+            }
+        }
+
+        // Get leaderboard data from Supabase
+        async function getLeaderboard() {
+            const { data, error } = await supabase
+                .from('leaderboard')
+                .select('*')
+                .order('score', { ascending: false })
+                .limit(10);
+
+            if (error) {
+                console.error('Error getting leaderboard:', error);
+            } else {
+                displayLeaderboard(data);
+            }
+        }
+
+        // Display leaderboard in the table
+        function displayLeaderboard(data) {
+            const tableBody = document.querySelector('#leaderboardTable tbody');
+            tableBody.innerHTML = '';  // Clear current table data
+
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.username}</td>
+                    <td>${item.score}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Simulate game over, ask for username and save score
+        function gameOver(score) {
+            const username = prompt("Enter your name:");
+            if (username) {
+                saveScore(username, score);
+                getLeaderboard();  // Update leaderboard after saving score
+            }
+        }
+
+        // Initial leaderboard fetch
+        getLeaderboard();
+    </script>
+</body>
+</html>
